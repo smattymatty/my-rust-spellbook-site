@@ -1,0 +1,26 @@
+# CURRENTLY — sidebar entries. Three sections (building / writing / contributing) are fixed.
+#
+# Per-entry fields:
+#   name       — short title (required)
+#   note       — one-line subtitle (optional)
+#   href       — URL the name links to (optional)
+#   started_at — YYYY-MM-DD (optional; useful for future /now/history/ page)
+#   ended_at   — YYYY-MM-DD (optional; presence kicks the entry out of the sidebar)
+
+[[building]]
+name = "Storm Cellar"
+note = "Canadian S3-compatible storage"
+href = "https://stormdevelopments.ca/cellar"
+started_at = "2025-09-01"
+
+[[writing]]
+name = "Own Your Stack"
+note = "a newsletter on infrastructure sovereignty"
+href = "/newsletter/"
+started_at = "2026-05-01"
+
+[[contributing]]
+name = "Garage"
+note = "upstream"
+href = "https://garagehq.deuxfleurs.fr/"
+started_at = "2025-11-01"

@@ -1,0 +1,21 @@
+# FORGES — where my code lives. Three categories, one entry each at present.
+# Category strings: "WORK" | "OPEN SOURCE" | "CONTRIBUTING".
+# Add a fourth entry by appending another [[entry]] table.
+
+[[entry]]
+category = "WORK"
+name = "Storm Forge"
+url = "https://git.stormdevelopments.ca/mathew"
+display = "git.stormdevelopments.ca/mathew"
+
+[[entry]]
+category = "OPEN SOURCE"
+name = "GitHub"
+url = "https://github.com/smattymatty"
+display = "github.com/smattymatty"
+
+[[entry]]
+category = "CONTRIBUTING"
+name = "Deuxfleurs"
+url = "https://git.deuxfleurs.fr/smattymatty"
+display = "git.deuxfleurs.fr/smattymatty"

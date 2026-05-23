@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}mathewstorm.ca{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <p class="lede">
+            Open Source engineer, writer, operator.
+        </p>
+        <p class="lede-sub">
+            Building open infrastructure in Canada. Writing about digital sovereignty, the systems we live in, and the reasons to continue building. From Ontario.
+        </p>
+    </div>
+    <aside class="hero-aside">
+        <div class="hero-founder">
+            <span class="hero-founder-label">FOUNDER</span>
+            <a class="hero-founder-name" href="https://stormdevelopments.ca">Storm Developments</a>
+            <p class="hero-founder-desc">Canadian cloud infrastructure on open source.</p>
+            <p class="hero-founder-creed">&#127464;&#127462; Sovereignty. Sustainability. Security.</p>
+            <p class="hero-founder-why">This is why Storm Developments exists. <a href="https://stormdevelopments.ca/guide/why-we-built-this/">Learn more &rarr;</a></p>
+        </div>
+    </aside>
+</section>
+
+<div class="quote-zone">
+    <div class="profile-block">
+        <div class="profile-pic" aria-label="profile photo">
+            <span class="profile-pic-placeholder">MS</span>
+        </div>
+    </div>
+    <div class="quote-region">
+        <section class="quote-panel" aria-label="rotating pull-quote">
+            <blockquote class="quote-body">
+                <p class="quote-text"></p>
+                <footer class="quote-foot">
+                    <div class="quote-credit">
+                        <a class="quote-attr" href=""></a>
+                        <span class="quote-sep">&middot;</span>
+                        <span class="quote-date"></span>
+                    </div>
+                </footer>
+            </blockquote>
+            <script type="application/json" class="quote-data">{{ quotes_json|safe }}</script>
+        </section>
+        <div class="quote-controls">
+            <button class="quote-prev" type="button" aria-label="previous quote">&larr; <span class="quote-next-label">prev</span></button>
+            <button class="quote-next" type="button" aria-label="next quote"><span class="quote-next-label">next</span> &rarr;</button>
+        </div>
+    </div>
+</div>
+
+<div class="index-grid">
+    <div class="index-main">
+        {% if !featured_posts.is_empty() %}
+        <section class="featured">
+            <h2 class="section-label">FEATURED</h2>
+            <ul class="post-list featured-list">
+                {% for post in featured_posts %}
+                <li class="featured-card">
+                    <a href="{{ post.url }}">
+                        <span class="post-kind post-kind--{{ post.kind }}">{{ post.kind_display }}</span>
+                        <span class="title">{{ post.title }}</span>
+                        {% if let Some(desc) = post.description %}
+                            <span class="description">{{ desc }}</span>
+                        {% endif %}
+                        <div class="post-meta">
+                            <span class="post-date">{{ post.published_at_display }}</span>
+                            <span class="post-meta-sep">&middot;</span>
+                            <span class="post-time">{{ post.reading_time }}m</span>
+                            {% if !post.tags.is_empty() %}
+                            <span class="post-meta-sep">&middot;</span>
+                            <ul class="tags post-list-tags">
+                                {% for tag in post.tags %}<li>{{ tag }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <section class="writing">
+            <h2 class="section-label">RECENT WRITING</h2>
+            <ul class="post-list">
+                {% for post in posts %}
+                <li>
+                    <a href="{{ post.url }}">
+                        <span class="post-kind post-kind--{{ post.kind }}">{{ post.kind_display }}</span>
+                        <span class="title">{{ post.title }}</span>
+                        {% if let Some(desc) = post.description %}
+                            <span class="description">{{ desc }}</span>
+                        {% endif %}
+                        <div class="post-meta">
+                            <span class="post-date">{{ post.published_at_display }}</span>
+                            <span class="post-meta-sep">&middot;</span>
+                            <span class="post-time">{{ post.reading_time }}m</span>
+                            {% if !post.tags.is_empty() %}
+                            <span class="post-meta-sep">&middot;</span>
+                            <ul class="tags post-list-tags">
+                                {% for tag in post.tags %}<li>{{ tag }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+
+    <aside class="index-side">
+        <section class="side-block">
+            <h2 class="section-label">CURRENTLY</h2>
+
+            {% if !now.building.is_empty() %}
+            <div class="now-section">
+                <h3 class="now-section-key">BUILDING</h3>
+                {% for entry in now.building %}
+                <div class="now-entry">
+                    <span class="now-entry-name">
+                        {% if let Some(href) = entry.href %}<a href="{{ href }}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}
+                    </span>
+                    {% if !entry.note.is_empty() %}<span class="now-entry-note">{{ entry.note }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if !now.writing.is_empty() %}
+            <div class="now-section">
+                <h3 class="now-section-key">WRITING</h3>
+                {% for entry in now.writing %}
+                <div class="now-entry">
+                    <span class="now-entry-name">
+                        {% if let Some(href) = entry.href %}<a href="{{ href }}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}
+                    </span>
+                    {% if !entry.note.is_empty() %}<span class="now-entry-note">{{ entry.note }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if !now.contributing.is_empty() %}
+            <div class="now-section">
+                <h3 class="now-section-key">CONTRIBUTING</h3>
+                {% for entry in now.contributing %}
+                <div class="now-entry">
+                    <span class="now-entry-name">
+                        {% if let Some(href) = entry.href %}<a href="{{ href }}">{{ entry.name }}</a>{% else %}{{ entry.name }}{% endif %}
+                    </span>
+                    {% if !entry.note.is_empty() %}<span class="now-entry-note">{{ entry.note }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="side-block">
+            <h2 class="section-label">FORGES</h2>
+
+            {% if !forges.work.is_empty() %}
+            <div class="forge-section">
+                <h3 class="forge-section-key">WORK</h3>
+                {% for entry in forges.work %}
+                <a class="forge-entry" href="{{ entry.url }}">
+                    <span class="forge-entry-name">{{ entry.name }}</span>
+                    <span class="forge-entry-display">{{ entry.display }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if !forges.open_source.is_empty() %}
+            <div class="forge-section">
+                <h3 class="forge-section-key">OPEN SOURCE</h3>
+                {% for entry in forges.open_source %}
+                <a class="forge-entry" href="{{ entry.url }}">
+                    <span class="forge-entry-name">{{ entry.name }}</span>
+                    <span class="forge-entry-display">{{ entry.display }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if !forges.contributing.is_empty() %}
+            <div class="forge-section">
+                <h3 class="forge-section-key">CONTRIBUTING</h3>
+                {% for entry in forges.contributing %}
+                <a class="forge-entry" href="{{ entry.url }}">
+                    <span class="forge-entry-name">{{ entry.name }}</span>
+                    <span class="forge-entry-display">{{ entry.display }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="side-block">
+            <h2 class="section-label">CONNECT</h2>
+            <ul class="connect-list">
+                {% for link in connect %}
+                <li>
+                    <span class="key">{{ link.key }}</span>
+                    <a href="{{ link.href }}">{{ link.label }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </aside>
+</div>
+{% endblock %}

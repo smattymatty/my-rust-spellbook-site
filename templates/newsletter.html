@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ name }} — mathewstorm.ca{% endblock %}
+
+{% block content %}
+<div class="oys-page">
+    <header class="oys-masthead">
+        <p class="oys-masthead-name">{{ name }}</p>
+        <p class="oys-masthead-tagline">{{ tagline }}</p>
+    </header>
+
+    {# ── PITCH — placeholder. Mr. Storm writes the real copy here. ──────
+       A headline + one or two short paragraphs: what "Own Your Stack" is,
+       who it is for, and why a non-LinkedIn reader should follow it.
+       No three-beat slogans. The bracketed text below renders on the page
+       so it is obvious, in a browser, that it still needs replacing. #}
+    <section class="oys-pitch">
+        <h1 class="oys-pitch-headline">[ PITCH HEADLINE — replace me ]</h1>
+        <p class="oys-pitch-body">
+            [ Placeholder. Replace with one or two short paragraphs telling a
+            cold visitor what this newsletter is and why it earns a place in
+            their feed reader. — to be written by Mr. Storm ]
+        </p>
+    </section>
+
+    <section class="oys-subscribe">
+        <a class="oys-subscribe-link" href="/newsletter/feed.xml">Subscribe via RSS &rarr;</a>
+        <p class="oys-subscribe-note">Works with any feed reader.</p>
+    </section>
+
+    <section class="oys-issues">
+        <h2 class="section-label">ISSUES</h2>
+        {% if issues.is_empty() %}
+        <p class="oys-issues-empty">No issues published yet.</p>
+        {% else %}
+        <ul class="post-list">
+            {% for issue in issues %}
+            <li>
+                <a href="{{ issue.url }}">
+                    {% if let Some(n) = issue.issue_display %}
+                    <span class="post-kind post-kind--newsletter">ISSUE {{ n }}</span>
+                    {% endif %}
+                    <span class="title">{{ issue.title }}</span>
+                    {% if let Some(desc) = issue.description %}
+                    <span class="description">{{ desc }}</span>
+                    {% endif %}
+                    <div class="post-meta">
+                        <span class="post-date">{{ issue.published_at_display }}</span>
+                        <span class="post-meta-sep">&middot;</span>
+                        <span class="post-time">{{ issue.reading_time }}m</span>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

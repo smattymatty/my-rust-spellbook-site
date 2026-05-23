@@ -1,0 +1,298 @@
+//! SpellBlock rendering — Django Spellbook's `{~ name attr="v" ~}…{~~}` block
+//! syntax inside markdown.
+//!
+//! The markdown pipeline calls [`render`] instead of pulldown-cmark directly:
+//! the document is split into plain-markdown segments and block segments, each
+//! is rendered, and the results are concatenated. A block's body is itself
+//! markdown. v1 blocks: alert, card, label_seperator, accordion — adding one is
+//! a single arm of [`render_block`]. Unknown or nested blocks fail the build.
+
+use std::collections::HashMap;
+
+use anyhow::{anyhow, bail, Result};
+use pulldown_cmark::{html, Parser};
+
+/// Render a markdown document — expanding SpellBlocks — into an HTML string.
+pub fn render(markdown: &str) -> Result<String> {
+    let mut out = String::new();
+    for segment in split(markdown)? {
+        match segment {
+            Segment::Markdown(md) => out.push_str(&markdown_to_html(&md)),
+            Segment::Block { name, attrs, inner } => {
+                out.push_str(&render_block(&name, &attrs, &inner)?);
+            }
+        }
+    }
+    Ok(out)
+}
+
+enum Segment {
+    Markdown(String),
+    Block {
+        name: String,
+        attrs: HashMap<String, String>,
+        inner: String,
+    },
+}
+
+/// Split raw markdown into an ordered run of plain-markdown and block segments.
+/// Fails loud on an unclosed tag, a stray `{~~}`, or a nested block.
+fn split(src: &str) -> Result<Vec<Segment>> {
+    let mut segments = Vec::new();
+    let mut markdown = String::new();
+    let mut rest = src;
+
+    while let Some(at) = rest.find("{~") {
+        markdown.push_str(&rest[..at]);
+        let (body, after) = tag_at(&rest[at..])?;
+        if body.is_empty() {
+            bail!("SpellBlock: a `{{~~}}` close with no matching block open");
+        }
+
+        // An opening tag — flush the markdown collected so far.
+        if !markdown.is_empty() {
+            segments.push(Segment::Markdown(std::mem::take(&mut markdown)));
+        }
+        let (name, attrs) = parse_tag(body)?;
+
+        // Collect inner content up to the matching `{~~}` close.
+        let mut inner = String::new();
+        let mut cursor = after;
+        loop {
+            let next = cursor.find("{~").ok_or_else(|| {
+                anyhow!("SpellBlock: block `{name}` is opened but never closed with `{{~~}}`")
+            })?;
+            inner.push_str(&cursor[..next]);
+            let (tag_body, tail) = tag_at(&cursor[next..])?;
+            if tag_body.is_empty() {
+                cursor = tail;
+                break;
+            }
+            bail!("SpellBlock: block `{tag_body}` nested inside `{name}` — nesting is not supported");
+        }
+        segments.push(Segment::Block { name, attrs, inner });
+        rest = cursor;
+    }
+
+    markdown.push_str(rest);
+    if !markdown.is_empty() {
+        segments.push(Segment::Markdown(markdown));
+    }
+    Ok(segments)
+}
+
+/// Given a slice that starts with `{~`, return the trimmed tag body and the
+/// remainder after the closing `~}`. An empty body is a `{~~}` close marker.
+fn tag_at(s: &str) -> Result<(&str, &str)> {
+    let inside = &s[2..];
+    let end = inside
+        .find("~}")
+        .ok_or_else(|| anyhow!("SpellBlock: `{{~` opened with no closing `~}}`"))?;
+    Ok((inside[..end].trim(), &inside[end + 2..]))
+}
+
+/// Parse a tag body (`name attr="v" attr2='v2'`) into a name and attributes.
+/// Quoted values may contain the other quote character.
+fn parse_tag(body: &str) -> Result<(String, HashMap<String, String>)> {
+    let (name, mut rest) = match body.find(char::is_whitespace) {
+        Some(i) => (&body[..i], body[i..].trim_start()),
+        None => (body, ""),
+    };
+    if name.is_empty() {
+        bail!("SpellBlock: a tag with no block name");
+    }
+
+    let mut attrs = HashMap::new();
+    while !rest.is_empty() {
+        let eq = rest
+            .find('=')
+            .ok_or_else(|| anyhow!("SpellBlock `{name}`: malformed attribute near `{rest}`"))?;
+        let key = rest[..eq].trim().to_string();
+        let after_eq = rest[eq + 1..].trim_start();
+        let quote = after_eq
+            .chars()
+            .next()
+            .filter(|c| *c == '"' || *c == '\'')
+            .ok_or_else(|| anyhow!("SpellBlock `{name}`: value of `{key}` must be quoted"))?;
+        let value = &after_eq[1..];
+        let end = value
+            .find(quote)
+            .ok_or_else(|| anyhow!("SpellBlock `{name}`: unterminated value for `{key}`"))?;
+        attrs.insert(key, value[..end].to_string());
+        rest = value[end + 1..].trim_start();
+    }
+    Ok((name.to_string(), attrs))
+}
+
+fn markdown_to_html(md: &str) -> String {
+    let mut out = String::new();
+    html::push_html(&mut out, Parser::new(md));
+    out
+}
+
+/// Dispatch a parsed block to its renderer. An unknown name fails the build.
+fn render_block(name: &str, attrs: &HashMap<String, String>, inner: &str) -> Result<String> {
+    let inner_html = markdown_to_html(inner);
+    match name {
+        "alert" => alert(attrs, &inner_html),
+        "card" => Ok(card(attrs, &inner_html)),
+        "label_seperator" => Ok(label_seperator(attrs, &inner_html)),
+        "accordion" => Ok(accordion(attrs, &inner_html)),
+        other => bail!(
+            "SpellBlock: unknown block `{other}` — v1 supports alert, card, label_seperator, accordion"
+        ),
+    }
+}
+
+// ─── Block renderers — native to mathewstorm.ca; styles live in style.css ───
+
+const ALERT_TYPES: [(&str, &str); 4] = [
+    ("info", "ℹ️"),
+    ("warning", "⚠️"),
+    ("success", "✅"),
+    ("danger", "🚫"),
+];
+
+fn alert(attrs: &HashMap<String, String>, inner_html: &str) -> Result<String> {
+    let kind = attrs.get("type").map(String::as_str).unwrap_or("info");
+    let icon = ALERT_TYPES
+        .iter()
+        .find(|(n, _)| *n == kind)
+        .map(|(_, icon)| *icon)
+        .ok_or_else(|| {
+            anyhow!("SpellBlock alert: unknown type `{kind}` — use info, warning, success, or danger")
+        })?;
+    Ok(format!(
+        "<aside class=\"spell-callout spell-callout--{kind}\">\n\
+         <span class=\"spell-callout-icon\" aria-hidden=\"true\">{icon}</span>\n\
+         <div class=\"spell-callout-body\">\n{inner_html}</div>\n\
+         </aside>\n"
+    ))
+}
+
+fn card(attrs: &HashMap<String, String>, inner_html: &str) -> String {
+    let head = attrs
+        .get("title")
+        .map(|t| format!("<header class=\"spell-card-head\">{}</header>\n", escape(t)))
+        .unwrap_or_default();
+    let foot = attrs
+        .get("footer")
+        .map(|f| format!("<footer class=\"spell-card-foot\">{}</footer>\n", escape(f)))
+        .unwrap_or_default();
+    format!(
+        "<article class=\"spell-card\">\n{head}\
+         <div class=\"spell-card-body\">\n{inner_html}</div>\n{foot}\
+         </article>\n"
+    )
+}
+
+fn label_seperator(attrs: &HashMap<String, String>, inner_html: &str) -> String {
+    // `color` becomes a CSS modifier class; keep it to a safe token.
+    let color: String = attrs
+        .get("color")
+        .map(String::as_str)
+        .unwrap_or("default")
+        .chars()
+        .filter(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_')
+        .collect();
+    format!(
+        "<div class=\"spell-step spell-step--{color}\">\n\
+         <span class=\"spell-step-label\">{inner_html}</span>\n\
+         </div>\n"
+    )
+}
+
+fn accordion(attrs: &HashMap<String, String>, inner_html: &str) -> String {
+    let title = escape(attrs.get("title").map(String::as_str).unwrap_or(""));
+    format!(
+        "<details class=\"spell-accordion\">\n\
+         <summary class=\"spell-accordion-summary\">{title}</summary>\n\
+         <div class=\"spell-accordion-body\">\n{inner_html}</div>\n\
+         </details>\n"
+    )
+}
+
+/// Escape text bound for HTML text or attribute content.
+fn escape(s: &str) -> String {
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn plain_markdown_passes_through() {
+        let out = render("# Title\n\nbody text").unwrap();
+        assert!(out.contains("<h1>Title</h1>"));
+        assert!(out.contains("<p>body text</p>"));
+    }
+
+    #[test]
+    fn alert_renders_type_icon_and_inner_markdown() {
+        let out = render("{~ alert type=\"warning\" ~}\n**heed**\n{~~}").unwrap();
+        assert!(out.contains("spell-callout--warning"));
+        assert!(out.contains("⚠️"));
+        assert!(out.contains("<strong>heed</strong>"));
+    }
+
+    #[test]
+    fn card_carries_title_and_footer() {
+        let out = render("{~ card title=\"T\" footer=\"F\" ~}\nbody\n{~~}").unwrap();
+        assert!(out.contains("spell-card-head\">T</header>"));
+        assert!(out.contains("spell-card-foot\">F</footer>"));
+        assert!(out.contains("<p>body</p>"));
+    }
+
+    #[test]
+    fn accordion_is_a_native_details_element() {
+        let out = render("{~ accordion title=\"More\" ~}\nhidden\n{~~}").unwrap();
+        assert!(out.contains("<details class=\"spell-accordion\">"));
+        assert!(out.contains("spell-accordion-summary\">More</summary>"));
+    }
+
+    #[test]
+    fn label_seperator_renders_its_label() {
+        let out = render("{~ label_seperator color=\"primary\" ~}\n**Step 1**\n{~~}").unwrap();
+        assert!(out.contains("spell-step--primary"));
+        assert!(out.contains("<strong>Step 1</strong>"));
+    }
+
+    #[test]
+    fn attribute_value_may_contain_the_other_quote() {
+        let (name, attrs) = parse_tag("card title='a \"quoted\" bit'").unwrap();
+        assert_eq!(name, "card");
+        assert_eq!(attrs["title"], "a \"quoted\" bit");
+    }
+
+    #[test]
+    fn surrounding_markdown_and_block_both_render() {
+        let out = render("before\n\n{~ alert ~}\nin\n{~~}\n\nafter").unwrap();
+        assert!(out.contains("<p>before</p>"));
+        assert!(out.contains("spell-callout"));
+        assert!(out.contains("<p>after</p>"));
+    }
+
+    #[test]
+    fn unknown_block_fails_loud() {
+        assert!(render("{~ hero ~}\nx\n{~~}").is_err());
+    }
+
+    #[test]
+    fn nested_block_fails_loud() {
+        assert!(render("{~ card ~}\n{~ alert ~}\ny\n{~~}\n{~~}").is_err());
+    }
+
+    #[test]
+    fn unclosed_block_fails_loud() {
+        assert!(render("{~ card ~}\nno close").is_err());
+    }
+
+    #[test]
+    fn bad_alert_type_fails_loud() {
+        assert!(render("{~ alert type=\"nope\" ~}\nx\n{~~}").is_err());
+    }
+}

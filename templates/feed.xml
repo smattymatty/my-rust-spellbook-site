@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ title }}</title>
+  <subtitle>{{ subtitle }}</subtitle>
+  <link rel="self" href="{{ feed_url }}"/>
+  <link rel="alternate" href="{{ home_url }}"/>
+  <id>{{ home_url }}</id>
+  <updated>{{ updated }}</updated>
+  <author><name>Mathew Storm</name></author>
+{% for entry in entries %}  <entry>
+    <title>{{ entry.title }}</title>
+    <link rel="alternate" href="{{ base_url }}{{ entry.url }}"/>
+    <id>{{ base_url }}{{ entry.url }}</id>
+    <published>{{ entry.published_at }}T00:00:00Z</published>
+    <updated>{{ entry.published_at }}T00:00:00Z</updated>
+{% if let Some(desc) = entry.description %}    <summary>{{ desc }}</summary>
+{% endif %}    <content type="html">{{ entry.body }}</content>
+  </entry>
+{% endfor %}</feed>

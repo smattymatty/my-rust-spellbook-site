@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}mathewstorm.ca{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="/media/images/favicon.svg">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="canonical" href="{{ meta.canonical_url }}">
+    <meta name="description" content="{{ meta.og_description }}">
+    <meta property="og:site_name" content="mathewstorm.ca">
+    <meta property="og:type" content="{{ meta.og_type }}">
+    <meta property="og:title" content="{{ meta.og_title }}">
+    <meta property="og:description" content="{{ meta.og_description }}">
+    <meta property="og:url" content="{{ meta.canonical_url }}">
+    {% if !meta.og_image.is_empty() %}<meta property="og:image" content="{{ meta.og_image }}">
+    <meta name="twitter:card" content="summary_large_image">{% else %}<meta name="twitter:card" content="summary">{% endif %}
+    {% if meta.body_class == "oys" %}<link rel="alternate" type="application/atom+xml" title="Own Your Stack" href="/newsletter/feed.xml">{% endif %}
+    {% block head %}{% endblock %}
+</head>
+<body id="top"{% if !meta.body_class.is_empty() %} class="{{ meta.body_class }}"{% endif %}>
+    <header class="site-header">
+        <a class="brand" href="/"><img class="brand-mark" src="/media/images/favicon.svg" alt="" aria-hidden="true">mathewstorm.ca</a>
+        <nav class="site-nav">
+            <a href="/">Writing</a>
+            <a href="/newsletter/">Newsletter</a>
+            <a href="https://resume.mathewstorm.ca">Resume</a>
+        </nav>
+    </header>
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="footer-row">
+            <span class="footer-brand"><img class="brand-mark" src="/media/images/favicon.svg" alt="" aria-hidden="true">mathewstorm.ca</span>
+            <span class="footer-status"><span class="status-dot"></span>ONLINE &middot; ONTARIO &middot; 2026</span>
+        </div>
+        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; <a href="#top">&uarr; back to top</a></p>
+    </footer>
+    <script src="/assets/js/quotes.js" defer></script>
+    <script src="/assets/js/copy-button.js" defer></script>
+    <script src="/assets/js/tag-collapse.js" defer></script>
+</body>
+</html>

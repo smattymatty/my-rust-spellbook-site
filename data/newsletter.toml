@@ -1,0 +1,6 @@
+# Newsletter identity.
+#
+# These strings drive the masthead bar (atop every newsletter issue, and on
+# the /newsletter/ index) and the Atom feed metadata
+name    = "Own Your Stack"
+tagline = "a newsletter on infrastructure sovereignty"

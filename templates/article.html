@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} — mathewstorm.ca{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+    <a class="crumb-link" href="{{ breadcrumb_href }}">&larr; {{ breadcrumb_label }}</a>
+    <span class="sep">&middot;</span>
+    <span class="date">{{ published_at_display }}</span>
+</nav>
+
+{% if let Some(nl) = newsletter %}
+<header class="oys-masthead">
+    <p class="oys-masthead-name">{{ nl.name }}</p>
+    <p class="oys-masthead-tagline">{{ nl.tagline }}</p>
+</header>
+{% endif %}
+
+<article class="post">
+    <h1>{{ title }}</h1>
+
+    <dl class="meta-strip">
+        <div class="meta-col">
+            <dt>BY</dt>
+            <dd>Mathew Storm</dd>
+        </div>
+        <div class="meta-col">
+            <dt>PUBLISHED</dt>
+            <dd>{{ published_at_display }}</dd>
+        </div>
+        {% if let Some(nl) = newsletter %}
+        <div class="meta-col">
+            <dt>ISSUE</dt>
+            <dd>{{ nl.issue_display }}</dd>
+        </div>
+        {% endif %}
+        {% if let Some(proj) = project %}
+        <div class="meta-col">
+            <dt>PROJECT</dt>
+            <dd>
+                {% if let Some(url) = project_url %}
+                <a href="{{ url }}">{{ proj }}</a>
+                {% else %}
+                {{ proj }}
+                {% endif %}
+            </dd>
+        </div>
+        {% endif %}
+        {% if let Some(pr) = pr_url %}
+        <div class="meta-col">
+            <dt>PR</dt>
+            <dd><a href="{{ pr }}">&rarr; view PR</a></dd>
+        </div>
+        {% endif %}
+        {% if !tags.is_empty() %}
+        <div class="meta-col meta-tags">
+            <dt>FILED UNDER</dt>
+            <dd>
+                <ul class="tags">
+                    {% for tag in tags %}<li>{{ tag }}</li>{% endfor %}
+                </ul>
+            </dd>
+        </div>
+        {% endif %}
+    </dl>
+
+    <div class="post-body">
+        {{ body|safe }}
+    </div>
+</article>
+
+<nav class="post-foot">
+    <a href="/">[ &uarr; all writing ]</a>
+</nav>
+{% endblock %}

@@ -1,0 +1,19 @@
+# Site-wide build configuration.
+#
+# base_url — the public origin the deployed bucket is served behind.
+#   The build prints this into the absolute URLs that <link rel="canonical">
+#   tags and the Atom feed require; both reject relative URLs.
+#
+#   This is the address readers ARRIVE at — not the S3/Garage endpoint the
+#   deploy crate pushes to (that lives in .env as CELLAR_ENDPOINT). No
+#   trailing slash: page paths already start with "/".
+base_url = "https://mathewstorm.ca"
+
+# description — the site-wide meta description and OpenGraph description, and
+# the fallback OG description for any post that has no `description` of its own.
+description = "Building open infrastructure in Canada. Writing about digital sovereignty, the systems we live in, and the reasons to continue building. From Ontario."
+
+# og_image — path to the 1200x630 social-share image used in link previews.
+# Leave empty to omit the og:image tag. To add one: drop a PNG at
+# static/media/images/og-image.png and set this to "/media/images/og-image.png".
+og_image = ""
