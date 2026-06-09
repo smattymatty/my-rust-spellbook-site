@@ -1,11 +1,15 @@
-//! Deploy dist/ to the Storm Cellar bucket (Garage, S3-compatible).
+//! Deploy dist/ to the Storm Buckets bucket (Garage, S3-compatible).
+//!
+//! Builds the site, diffs dist/ against the bucket by content (MD5 vs ETag),
+//! and mirrors only what actually changed.
 //!
 //! Run from the project root, where dist/ and .env live:
-//!     cargo run -p deploy                 # mirror dist/ into the bucket
+//!     cargo run -p deploy                 # build, diff, then apply changes
 //!     cargo run -p deploy -- --dry-run    # show what would change, touch nothing
-//!     cargo run -p deploy -- --yes        # skip the confirmation before deletes
+//!     cargo run -p deploy -- --yes        # skip the confirmation prompt
+//!     cargo run -p deploy -- --no-build   # deploy the existing dist/ as-is
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
@@ -20,11 +24,26 @@ use walkdir::WalkDir;
 async fn main() -> Result<()> {
     let dry_run = std::env::args().any(|a| a == "--dry-run");
     let assume_yes = std::env::args().any(|a| a == "--yes");
+    let no_build = std::env::args().any(|a| a == "--no-build");
+
+    // Build the site first so dist/ always reflects current source. The deploy
+    // is otherwise a foot-gun: an unbuilt dist/ silently ships stale HTML.
+    if !no_build {
+        println!("building site...");
+        let status = std::process::Command::new("cargo")
+            .args(["run", "--quiet", "--bin", "rust-spellbook-static"])
+            .status()
+            .context("running the site build")?;
+        if !status.success() {
+            bail!("site build failed; aborting deploy");
+        }
+        println!();
+    }
 
     let dist = Path::new("dist");
     if !dist.is_dir() {
         bail!(
-            "no dist/ directory in {} — build the site first",
+            "no dist/ directory in {} - build the site first",
             std::env::current_dir()?.display()
         );
     }
@@ -37,19 +56,19 @@ async fn main() -> Result<()> {
             .cloned()
             .ok_or_else(|| anyhow!("missing {key} in .env"))
     };
-    let endpoint: String = get("CELLAR_ENDPOINT")?;
-    let bucket: String = get("CELLAR_KEY_BUCKET")?;
+    let endpoint: String = get("BUCKETS_ENDPOINT")?;
+    let bucket: String = get("BUCKETS_KEY_BUCKET")?;
 
     let creds: Credentials = Credentials::new(
-        get("CELLAR_KEY_ID")?,
-        get("CELLAR_KEY_SECRET")?,
+        get("BUCKETS_KEY_ID")?,
+        get("BUCKETS_KEY_SECRET")?,
         None,
         None,
-        "cellar-env",
+        "buckets-env",
     );
     let config = Config::builder()
         .behavior_version(BehaviorVersion::latest())
-        .region(Region::new(get("CELLAR_KEY_REGION")?))
+        .region(Region::new(get("BUCKETS_KEY_REGION")?))
         .endpoint_url(&endpoint)
         .credentials_provider(creds)
         .force_path_style(true) // Garage expects path-style bucket addressing
@@ -66,8 +85,10 @@ async fn main() -> Result<()> {
         }
     }
 
-    // Everything currently in the bucket.
-    let mut remote: HashSet<String> = HashSet::new();
+    // Everything currently in the bucket, keyed by object key -> ETag. For the
+    // single-part PUTs this tool makes, Garage's ETag is the hex MD5 of the
+    // body, so it doubles as a content fingerprint for change detection.
+    let mut remote: HashMap<String, String> = HashMap::new();
     let mut pages = client
         .list_objects_v2()
         .bucket(&bucket)
@@ -77,81 +98,112 @@ async fn main() -> Result<()> {
         let page = page.context("listing bucket")?;
         for obj in page.contents() {
             if let Some(key) = obj.key() {
-                remote.insert(key.to_string());
+                let etag = obj.e_tag().unwrap_or_default().trim_matches('"').to_string();
+                remote.insert(key.to_string(), etag);
             }
         }
     }
 
+    // Classify every local file: new, content-changed, or byte-identical.
+    let mut to_upload: Vec<String> = Vec::new();
+    let mut unchanged: usize = 0;
+    for (key, path) in &local {
+        let bytes = std::fs::read(path)
+            .with_context(|| format!("reading {}", path.display()))?;
+        let local_md5 = format!("{:x}", md5::compute(&bytes));
+        match remote.get(key) {
+            Some(etag) if etag.eq_ignore_ascii_case(&local_md5) => unchanged += 1,
+            _ => to_upload.push(key.clone()),
+        }
+    }
+    to_upload.sort();
+
+    // Stale: in the bucket but no longer in dist/.
     let mut stale: Vec<String> = remote
-        .iter()
+        .keys()
         .filter(|k| !local.contains_key(k.as_str()))
         .cloned()
         .collect();
     stale.sort();
 
-    println!(
-        "{}deploying {} file(s) to {bucket} ({endpoint})\n",
-        if dry_run { "DRY RUN — " } else { "" },
-        local.len(),
-    );
-
-    // Uploads first — additive, so an aborted prune still leaves the site current.
-    let mut keys: Vec<&String> = local.keys().collect();
-    keys.sort();
-    for key in keys {
-        let path: &PathBuf = &local[key];
-        let ctype: &str = content_type(path);
+    // Nothing to do — the common case after a no-op rebuild.
+    if to_upload.is_empty() && stale.is_empty() {
         println!(
-            "  {}: {key}  [{ctype}]",
-            if dry_run { "would upload" } else { "upload" }
+            "no changes - bucket is up to date ({} file(s), {unchanged} unchanged)",
+            local.len()
         );
-        if !dry_run {
-            let body: ByteStream = ByteStream::from_path(path)
-                .await
-                .with_context(|| format!("reading {}", path.display()))?;
-            client
-                .put_object()
-                .bucket(&bucket)
-                .key(key)
-                .body(body)
-                .content_type(ctype)
-                .cache_control(cache_control(path))
-                .send()
-                .await
-                .with_context(|| format!("uploading {key}"))?;
+        return Ok(());
+    }
+
+    // Show the plan before touching anything.
+    println!(
+        "{}changes for {bucket} ({endpoint}):\n",
+        if dry_run { "DRY RUN - " } else { "" }
+    );
+    if !to_upload.is_empty() {
+        println!("  {} to upload:", to_upload.len());
+        for key in &to_upload {
+            println!("    + {key}  [{}]", content_type(&local[key]));
+        }
+    }
+    if unchanged > 0 {
+        println!("  {unchanged} unchanged (skipped)");
+    }
+    if !stale.is_empty() {
+        println!("\n  {} to delete (not in dist/):", stale.len());
+        for key in &stale {
+            println!("    - {key}");
         }
     }
 
+    if dry_run {
+        println!("\n(dry run - nothing changed)");
+        return Ok(());
+    }
+    if !assume_yes && !confirm("apply these changes?")? {
+        println!("aborted - nothing changed");
+        return Ok(());
+    }
+    println!();
+
+    // Uploads first - additive, so an aborted prune still leaves the site current.
+    for key in &to_upload {
+        let path: &PathBuf = &local[key];
+        let ctype: &str = content_type(path);
+        println!("  upload: {key}");
+        let body: ByteStream = ByteStream::from_path(path)
+            .await
+            .with_context(|| format!("reading {}", path.display()))?;
+        client
+            .put_object()
+            .bucket(&bucket)
+            .key(key)
+            .body(body)
+            .content_type(ctype)
+            .cache_control(cache_control(path))
+            .send()
+            .await
+            .with_context(|| format!("uploading {key}"))?;
+    }
+
     // Mirror: prune objects that no longer exist in dist/.
-    if stale.is_empty() {
-        println!("\nno stale objects");
-    } else {
-        println!("\n{} stale object(s) not present in dist/:", stale.len());
-        for key in &stale {
-            println!("  - {key}");
+    if !stale.is_empty() {
+        // delete_objects accepts up to 1000 keys per call.
+        for chunk in stale.chunks(1000) {
+            let objects: Vec<ObjectIdentifier> = chunk
+                .iter()
+                .map(|k| ObjectIdentifier::builder().key(k).build())
+                .collect::<Result<_, _>>()?;
+            let delete = Delete::builder().set_objects(Some(objects)).build()?;
+            client
+                .delete_objects()
+                .bucket(&bucket)
+                .delete(delete)
+                .send()
+                .await
+                .context("deleting stale objects")?;
         }
-        if dry_run {
-            println!("(dry run — nothing deleted)");
-        } else if !assume_yes && !confirm("delete these from the bucket?")? {
-            println!("skipped deletions");
-        } else {
-            // delete_objects accepts up to 1000 keys per call.
-            for chunk in stale.chunks(1000) {
-                let objects: Vec<ObjectIdentifier> = chunk
-                    .iter()
-                    .map(|k| ObjectIdentifier::builder().key(k).build())
-                    .collect::<Result<_, _>>()?;
-                let delete = Delete::builder().set_objects(Some(objects)).build()?;
-                client
-                    .delete_objects()
-                    .bucket(&bucket)
-                    .delete(delete)
-                    .send()
-                    .await
-                    .context("deleting stale objects")?;
-            }
-            println!("deleted {} object(s)", stale.len());
-        }
+        println!("  deleted {} object(s)", stale.len());
     }
 
     println!("\ndone");
@@ -176,7 +228,7 @@ fn load_env(path: &Path) -> Result<HashMap<String, String>> {
     Ok(env)
 }
 
-/// Object key for a path relative to dist/ — forward slashes on every OS.
+/// Object key for a path relative to dist/ - forward slashes on every OS.
 fn to_key(rel: &Path) -> String {
     rel.components()
         .map(|c| c.as_os_str().to_string_lossy())
@@ -211,10 +263,13 @@ fn cache_control(path: &Path) -> &'static str {
     }
 }
 
+/// Default-yes confirmation: a bare Enter (or "y") proceeds; only an explicit
+/// "n" backs out. The capital Y in "[Y/n]" signals that Enter means go.
 fn confirm(prompt: &str) -> Result<bool> {
-    print!("\n{prompt} [y/N] ");
+    print!("\n{prompt} [Y/n] ");
     io::stdout().flush()?;
     let mut answer = String::new();
     io::stdin().read_line(&mut answer)?;
-    Ok(answer.trim().eq_ignore_ascii_case("y"))
+    let answer = answer.trim();
+    Ok(answer.is_empty() || answer.eq_ignore_ascii_case("y"))
 }
