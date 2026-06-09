@@ -36,12 +36,12 @@ pub struct Quote {
 /// The "Own Your Stack" identity carried by a newsletter issue page.
 /// `Some` on `Article` iff the post's kind is "newsletter".
 pub struct NewsletterIssue {
-    pub name: String,           // "Own Your Stack" — masthead
+    pub name: String,           // "Own Your Stack" - masthead
     pub tagline: String,        // masthead tagline
     pub issue_display: String,  // zero-padded issue number, e.g. "001"
 }
 
-/// Everything base.html needs for a page's <head> — canonical URL, social
+/// Everything base.html needs for a page's <head> - canonical URL, social
 /// cards, and the body scope. One of these is built per rendered page.
 pub struct PageMeta {
     pub canonical_url: String,   // <link rel="canonical"> and og:url
@@ -89,7 +89,7 @@ pub struct Post {
 #[template(path = "index.html")]
 pub struct Index {
     pub featured_posts: Vec<Post>,   // 0-2 posts marked featured: true, most recent first
-    pub posts: Vec<Post>,            // RECENT WRITING — everything else
+    pub posts: Vec<Post>,            // RECENT WRITING - everything else
     pub now: Now,
     pub connect: Vec<ConnectLink>,
     pub forges: ForgesGrouped,

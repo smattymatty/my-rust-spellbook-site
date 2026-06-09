@@ -40,7 +40,7 @@ fn main() -> Result<()> {
         .context("loading data/site.toml")?;
     println!("site base: {}", site.base_url);
 
-    // "Own Your Stack" identity — masthead strings, reused by every newsletter
+    // "Own Your Stack" identity - masthead strings, reused by every newsletter
     // issue page and (Issues 3 & 4) the /newsletter/ index and Atom feed.
     let newsletter = data::load_newsletter(&data_root.join("newsletter.toml"))
         .context("loading data/newsletter.toml")?;
@@ -105,7 +105,7 @@ fn main() -> Result<()> {
     let quotes_json = serde_json::to_string(&quotes)
         .context("serializing quotes for index")?;
 
-    // Newsletter issues, newest first — the /newsletter/ landing page lists
+    // Newsletter issues, newest first - the /newsletter/ landing page lists
     // these. Taken before the partition below consumes `posts`.
     let mut newsletter_issues: Vec<render::Post> = posts
         .iter()
@@ -114,7 +114,7 @@ fn main() -> Result<()> {
         .collect();
     newsletter_issues.sort_by(|a, b| b.published_at.cmp(&a.published_at));
 
-    // Sitemap entries — every page. Built before the partition consumes `posts`.
+    // Sitemap entries - every page. Built before the partition consumes `posts`.
     let mut sitemap_urls = vec![
         render::SitemapUrl { loc: format!("{}/", site.base_url), lastmod: None },
         render::SitemapUrl { loc: format!("{}/newsletter/", site.base_url), lastmod: None },
@@ -144,7 +144,7 @@ fn main() -> Result<()> {
         meta: render::PageMeta {
             canonical_url: format!("{}/", site.base_url),
             body_class: String::new(),
-            og_title: "mathewstorm.ca".to_string(),
+            og_title: "Mathew Storm - Personal Site".to_string(),
             og_description: site.description.clone(),
             og_type: "website".to_string(),
             og_image: og_image_url(&site),
@@ -154,7 +154,7 @@ fn main() -> Result<()> {
     output::write_index(output_root, &index_html)?;
     println!("wrote {}/index.html ({} posts)", output_root.display(), post_count);
 
-    // The /newsletter/ landing page — "Own Your Stack" masthead, pitch, and
+    // The /newsletter/ landing page - "Own Your Stack" masthead, pitch, and
     // the issue list. Resolves the /newsletter/ link advertised in now.toml.
     let newsletter_page = render::NewsletterIndex {
         meta: render::PageMeta {
@@ -173,7 +173,7 @@ fn main() -> Result<()> {
     let written = output::write_at(output_root, "newsletter/index.html", &newsletter_html)?;
     println!("wrote {} ({} issue(s))", written.display(), newsletter_page.issues.len());
 
-    // The Atom feed — newsletter issues only. Absolute URLs and RFC3339
+    // The Atom feed - newsletter issues only. Absolute URLs and RFC3339
     // timestamps; published_at is YYYY-MM-DD, so midnight UTC is appended.
     let feed_updated = newsletter_issues
         .first()
@@ -192,7 +192,7 @@ fn main() -> Result<()> {
     let written = output::write_at(output_root, "newsletter/feed.xml", &feed_xml)?;
     println!("wrote {} ({} entries)", written.display(), feed.entries.len());
 
-    // sitemap.xml — every page, for search-engine discovery.
+    // sitemap.xml - every page, for search-engine discovery.
     let sitemap = render::Sitemap { urls: sitemap_urls };
     let sitemap_xml = sitemap.render().context("rendering sitemap")?;
     let written = output::write_at(output_root, "sitemap.xml", &sitemap_xml)?;
@@ -289,7 +289,7 @@ fn render_markdown_to_html(
 
 fn reading_time_from_html(html: &str) -> u32 {
     // Strip HTML tags by scanning character-by-character. Cheap and good enough
-    // for word counting — pulldown-cmark output is well-formed.
+    // for word counting - pulldown-cmark output is well-formed.
     let mut in_tag = false;
     let mut text = String::with_capacity(html.len());
     for c in html.chars() {

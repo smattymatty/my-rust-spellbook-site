@@ -17,7 +17,7 @@ GitHub is owned by Microsoft. If we're going to tell Canadian organizations to g
 
 ## What is Forgejo?
 
-Forgejo is a self-hosted Git forge. Think GitHub, but you run it yourself on your own server. It's a fork of Gitea, maintained by a community instead of a corporation. It's written in Go, ships as a single binary or Docker image, and runs on basically nothing — under 512MB of RAM.
+Forgejo is a self-hosted Git forge. Think GitHub, but you run it yourself on your own server. It's a fork of Gitea, maintained by a community instead of a corporation. It's written in Go, ships as a single binary or Docker image, and runs on basically nothing - under 512MB of RAM.
 
 It does pull requests, issues, CI/CD (Forgejo Actions, compatible with GitHub Actions), package registries, and everything else you'd actually use day-to-day.
 
@@ -162,7 +162,7 @@ Forgejo serves anything in `public/` at the root path, so `/assets/css/custom.cs
 
 ### Theme Overrides
 
-The theme CSS is just class overrides — I didn't touch any HTML. Forgejo uses Fomantic UI (a Semantic UI fork), so you're overriding classes like `.ui.segment`, `.ui.button`, `.ui.dropdown .menu`, etc. I mapped everything to my brand palette:
+The theme CSS is just class overrides - I didn't touch any HTML. Forgejo uses Fomantic UI (a Semantic UI fork), so you're overriding classes like `.ui.segment`, `.ui.button`, `.ui.dropdown .menu`, etc. I mapped everything to my brand palette:
 
 ```css
 :root {
@@ -178,7 +178,7 @@ Backgrounds, links, buttons, dropdowns, inputs, repo file trees, README renderin
 
 ### Replacing the Logo
 
-Forgejo hardcodes `logo.svg` in its templates. You can't just drop a PNG in there and call it done — it loads `logo.svg` specifically. The workaround is to base64-encode your PNG and embed it inside an SVG:
+Forgejo hardcodes `logo.svg` in its templates. You can't just drop a PNG in there and call it done - it loads `logo.svg` specifically. The workaround is to base64-encode your PNG and embed it inside an SVG:
 
 ```bash
 B64=$(base64 -w0 logo.png)
@@ -191,7 +191,7 @@ EOF
 
 ### Custom Homepage
 
-This is the big one. By default, logged-out visitors see Forgejo's generic landing page — "A painless, self-hosted Git service" with feature cards about cross-platform support. That screams "I installed Forgejo." Not what I want.
+This is the big one. By default, logged-out visitors see Forgejo's generic landing page - "A painless, self-hosted Git service" with feature cards about cross-platform support. That screams "I installed Forgejo." Not what I want.
 
 Drop a `home.tmpl` in `templates/` (not `templates/custom/` - this one replaces the whole page) and you can build whatever you want. Mine has a hero section, sovereignty messaging, project cards for all Storm Developments products, and the company footer. It links to an external `home.css` for maintainability.
 
@@ -226,7 +226,7 @@ The total cost is $6.95 CAD/month. The setup took 30 minutes. The branding took 
 
 Right now, Storm Forge is private - just our company's code. But it doesn't have to stay that way.
 
-Canada doesn't have a Codeberg. There's no Canadian-hosted, Canadian-owned Git forge where developers can push code and know it stays here. Every Canadian developer on GitHub, GitLab, or Bitbucket is storing their source code on American servers, subject to American law. That's the same problem Storm Cellar aims to solve for object storage - and Storm Forge could solve it for code.
+Canada doesn't have a Codeberg. There's no Canadian-hosted, Canadian-owned Git forge where developers can push code and know it stays here. Every Canadian developer on GitHub, GitLab, or Bitbucket is storing their source code on American servers, subject to American law. That's the same problem Storm Buckets aims to solve for object storage - and Storm Forge could solve it for code.
 
 I'm not announcing anything yet. But the infrastructure is there, the branding is there, and the demand is obvious to anyone paying attention to Canadian tech policy right now.
 

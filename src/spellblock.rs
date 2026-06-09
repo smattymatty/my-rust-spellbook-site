@@ -1,10 +1,10 @@
-//! SpellBlock rendering — Django Spellbook's `{~ name attr="v" ~}…{~~}` block
+//! SpellBlock rendering - Django Spellbook's `{~ name attr="v" ~}…{~~}` block
 //! syntax inside markdown.
 //!
 //! The markdown pipeline calls [`render`] instead of pulldown-cmark directly:
 //! the document is split into plain-markdown segments and block segments, each
 //! is rendered, and the results are concatenated. A block's body is itself
-//! markdown. v1 blocks: alert, card, label_seperator, accordion — adding one is
+//! markdown. v1 blocks: alert, card, label_seperator, accordion - adding one is
 //! a single arm of [`render_block`]. Unknown or nested blocks fail the build.
 
 use std::collections::HashMap;
@@ -12,7 +12,7 @@ use std::collections::HashMap;
 use anyhow::{anyhow, bail, Result};
 use pulldown_cmark::{html, Parser};
 
-/// Render a markdown document — expanding SpellBlocks — into an HTML string.
+/// Render a markdown document - expanding SpellBlocks - into an HTML string.
 pub fn render(markdown: &str) -> Result<String> {
     let mut out = String::new();
     for segment in split(markdown)? {
@@ -49,7 +49,7 @@ fn split(src: &str) -> Result<Vec<Segment>> {
             bail!("SpellBlock: a `{{~~}}` close with no matching block open");
         }
 
-        // An opening tag — flush the markdown collected so far.
+        // An opening tag - flush the markdown collected so far.
         if !markdown.is_empty() {
             segments.push(Segment::Markdown(std::mem::take(&mut markdown)));
         }
@@ -68,7 +68,7 @@ fn split(src: &str) -> Result<Vec<Segment>> {
                 cursor = tail;
                 break;
             }
-            bail!("SpellBlock: block `{tag_body}` nested inside `{name}` — nesting is not supported");
+            bail!("SpellBlock: block `{tag_body}` nested inside `{name}` - nesting is not supported");
         }
         segments.push(Segment::Block { name, attrs, inner });
         rest = cursor;
@@ -139,12 +139,12 @@ fn render_block(name: &str, attrs: &HashMap<String, String>, inner: &str) -> Res
         "label_seperator" => Ok(label_seperator(attrs, &inner_html)),
         "accordion" => Ok(accordion(attrs, &inner_html)),
         other => bail!(
-            "SpellBlock: unknown block `{other}` — v1 supports alert, card, label_seperator, accordion"
+            "SpellBlock: unknown block `{other}` - v1 supports alert, card, label_seperator, accordion"
         ),
     }
 }
 
-// ─── Block renderers — native to mathewstorm.ca; styles live in style.css ───
+// ─── Block renderers - native to mathewstorm.ca; styles live in style.css ───
 
 const ALERT_TYPES: [(&str, &str); 4] = [
     ("info", "ℹ️"),
@@ -160,7 +160,7 @@ fn alert(attrs: &HashMap<String, String>, inner_html: &str) -> Result<String> {
         .find(|(n, _)| *n == kind)
         .map(|(_, icon)| *icon)
         .ok_or_else(|| {
-            anyhow!("SpellBlock alert: unknown type `{kind}` — use info, warning, success, or danger")
+            anyhow!("SpellBlock alert: unknown type `{kind}` - use info, warning, success, or danger")
         })?;
     Ok(format!(
         "<aside class=\"spell-callout spell-callout--{kind}\">\n\

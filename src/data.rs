@@ -75,7 +75,7 @@ pub struct Site {
 
 #[derive(Debug, Deserialize)]
 pub struct Newsletter {
-    pub name: String,        // "Own Your Stack" — masthead + (Issue 4) feed title
+    pub name: String,        // "Own Your Stack" - masthead + (Issue 4) feed title
     pub tagline: String,     // masthead tagline
 }
 

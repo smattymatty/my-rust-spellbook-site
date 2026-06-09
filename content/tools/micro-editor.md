@@ -11,9 +11,9 @@ tags:
 
 I spend a lot of time SSHed into VPSes. Editing Docker Compose files, tweaking Caddyfiles, adjusting config files, reading logs. The terminal is where I live when I'm deploying things.
 
-For a while, I thought the only choice was Nano and Vim. Nano is fine — it opens, you type, you save. But it feels like Notepad in 1995. No syntax highlighting worth mentioning, no multi-cursor, no real editing power. You outgrow it fast.
+For a while, I thought the only choice was Nano and Vim. Nano is fine - it opens, you type, you save. But it feels like Notepad in 1995. No syntax highlighting worth mentioning, no multi-cursor, no real editing power. You outgrow it fast.
 
-And the keybindings are unhinged. `^` means Ctrl. `M-` means Alt — not "Meta", not some special key, just Alt, but they call it Meta because apparently clarity is optional. Ctrl+X to quit — not Ctrl+Q like every other program on earth. Ctrl+O to save — not Ctrl+S. Ctrl+K to cut a line, Ctrl+U to paste it — because Ctrl+C and Ctrl+V were too intuitive? Ctrl+W to search — which in every browser and most editors closes the tab. The keybindings feel like they were designed by someone who had never used another program before and never planned to.
+And the keybindings are unhinged. `^` means Ctrl. `M-` means Alt - not "Meta", not some special key, just Alt, but they call it Meta because apparently clarity is optional. Ctrl+X to quit - not Ctrl+Q like every other program on earth. Ctrl+O to save - not Ctrl+S. Ctrl+K to cut a line, Ctrl+U to paste it - because Ctrl+C and Ctrl+V were too intuitive? Ctrl+W to search - which in every browser and most editors closes the tab. The keybindings feel like they were designed by someone who had never used another program before and never planned to.
 
 Vim is the opposite problem. It's incredibly powerful, but every time I open it my brain has to context-switch into "vim mode." Modal editing, memorizing keybindings, accidentally yanking lines when I just wanted to scroll. I know people who love it. I am not those people. When I'm SSHed into a server at midnight fixing a config, I don't want cognitive overhead. I want to open a file, see what I'm doing, make the change, and get out.
 
@@ -50,16 +50,16 @@ source ~/.bashrc
 
 ## Why Not Nano?
 
-Nano gets the job done and usually comes pre-installed. But once you've edited a Docker Compose file in Micro with real syntax highlighting, a visible cursor position, and tab completion — going back to nano feels like editing with a rock.
+Nano gets the job done and usually comes pre-installed. But once you've edited a Docker Compose file in Micro with real syntax highlighting, a visible cursor position, and tab completion - going back to nano feels like editing with a rock.
 
 {~ card ~}
 Things Micro has that nano doesn't (or barely does):
 
 - Proper syntax highlighting for basically every language and config format
 - Multiple cursors (Ctrl+D, same as VS Code)
-- Split panes — edit two files side by side in one terminal
+- Split panes - edit two files side by side in one terminal
 - A built-in plugin system
-- Mouse support that actually works — click to place cursor, drag to select
+- Mouse support that actually works - click to place cursor, drag to select
 - Find and replace that doesn't feel like it was designed in 1988
 {~~}
 
@@ -67,7 +67,7 @@ Things Micro has that nano doesn't (or barely does):
 
 I respect vim users. I just don't want to be one.
 
-Every time I try vim, I spend more time thinking about the editor than thinking about the file I'm editing. That's the wrong tradeoff for what I do. I'm not writing code on a VPS — I'm editing configs, tweaking settings, making quick changes. I need an editor that disappears and lets me focus on the content.
+Every time I try vim, I spend more time thinking about the editor than thinking about the file I'm editing. That's the wrong tradeoff for what I do. I'm not writing code on a VPS - I'm editing configs, tweaking settings, making quick changes. I need an editor that disappears and lets me focus on the content.
 
 Micro does that. I open it, I see the file, I make my change, I save, I leave. Zero mental overhead.
 

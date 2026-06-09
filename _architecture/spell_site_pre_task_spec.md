@@ -1,4 +1,4 @@
-# Pre-Task Spec: Spell Site — Generator / Theme / Extension System
+# Pre-Task Spec: Spell Site - Generator / Theme / Extension System
 
 **Status:** Pre-task, post-grilling (revision 1). Ready for implementation planning *after* the user reads this cold and marks corrections.
 
@@ -25,9 +25,9 @@ This revision rewrites the pre-task spec the user handed in mid-session. The ori
 
 ## 1. The thesis
 
-Storm Cellar evolves from "managed S3" into a platform for sovereignty-conscious creators who want a personal site, resume, vault publication, or game host on Canadian infrastructure with open source underneath. Spell Site is the layer that helps them produce the actual site files.
+Storm Buckets evolves from "managed S3" into a platform for sovereignty-conscious creators who want a personal site, resume, vault publication, or game host on Canadian infrastructure with open source underneath. Spell Site is the layer that helps them produce the actual site files.
 
-**Product framing:** "cast your site like a spell." A user fills out a form (or points at their vault), picks a theme, optionally adds extensions, hits a button, and a real static site appears in their Cellar bucket.
+**Product framing:** "cast your site like a spell." A user fills out a form (or points at their vault), picks a theme, optionally adds extensions, hits a button, and a real static site appears in their Buckets bucket.
 
 **Engine framing:** Spell Site is a *front door* on the same Rust engine that powers the user's personal site CLI (`rust-spellbook-static`). One engine, two modes. See §3.9.
 
@@ -39,7 +39,7 @@ Three are declarative (data). One is a code runtime. Composition is via well-def
 
 ### 2.1 Generator (declarative)
 
-A generator declares *how a site is composed* — what config it accepts, what singleton files it produces, what collections it iterates over, what tokens themes can override, and what extension slots are available.
+A generator declares *how a site is composed* - what config it accepts, what singleton files it produces, what collections it iterates over, what tokens themes can override, and what extension slots are available.
 
 Fields:
 
@@ -147,7 +147,7 @@ Fields:
 }
 ```
 
-**Collection DSL semantics (sketch — see §4.10 for residual sub-decisions):**
+**Collection DSL semantics (sketch - see §4.10 for residual sub-decisions):**
 
 - `source` is a glob, with `{config_var}` interpolation from `config_schema` values.
 - `item_template` is rendered once per matched file. Tera context includes `{ frontmatter, content_html, path, slug, ...config }`.
@@ -211,8 +211,8 @@ Example:
 
 **The Rust engine in `rust-spellbook-static`.** Two operating modes (per §3.9):
 
-- **CLI mode** — used by the user (Mr. Storm) to generate his own personal site from content + data + a hardcoded generator + Tera templates. This is the existing `rust-spellbook-static` binary, adapted to load generators from manifests.
-- **Server mode** — used by the Spell Site flow. The engine runs as a long-lived process on a dedicated VPS managed by Storm Pulse. It accepts generation requests from the Storm backend, runs the requested generator with the user's config + content, and streams the generated files back through the backend to the user's browser.
+- **CLI mode** - used by the user (Mr. Storm) to generate his own personal site from content + data + a hardcoded generator + Tera templates. This is the existing `rust-spellbook-static` binary, adapted to load generators from manifests.
+- **Server mode** - used by the Spell Site flow. The engine runs as a long-lived process on a dedicated VPS managed by Storm Pulse. It accepts generation requests from the Storm backend, runs the requested generator with the user's config + content, and streams the generated files back through the backend to the user's browser.
 
 The engine's responsibilities in order (per generation request, in both modes):
 
@@ -235,7 +235,7 @@ These are the load-bearing decisions. The agent should not re-litigate them.
 
 ### 3.1 Generators are data, not code
 
-User-contributed and AI-generated generators cannot be arbitrary code without serious sandboxing. Declarative manifests sidestep that problem entirely — the runtime is the only code, and it ships with Storm.
+User-contributed and AI-generated generators cannot be arbitrary code without serious sandboxing. Declarative manifests sidestep that problem entirely - the runtime is the only code, and it ships with Storm.
 
 Under WASM extensions (§2.3), this commitment is *strengthened*: even the executable code path is locked into a capability-gated sandbox. There is no path by which a user-contributed generator can execute arbitrary native code on Storm infrastructure.
 
@@ -256,7 +256,7 @@ This is a real narrowing from v0's "browser-only generation" framing. The previo
 
 Themes override CSS tokens. They never modify HTML structure or ship JS. If a theme needs JS behavior (animations, interactivity), that's an extension. The line is firm.
 
-### 3.4 Layout is structural, not theming — with feature-toggle exception (revised from v0)
+### 3.4 Layout is structural, not theming - with feature-toggle exception (revised from v0)
 
 Single-column vs two-column resume = different generators. Themes are visual treatment over a fixed structure.
 
@@ -264,7 +264,7 @@ Single-column vs two-column resume = different generators. Themes are visual tre
 
 ### 3.5 Extension slots are explicit
 
-Generators declare which slots exist. Extensions declare which slot(s) they hook into via `hooks_into`. The match is validated at gen-start time. Extensions don't get to inject arbitrary code anywhere — they get the slots the generator chose to expose, and they get only the host capabilities they declared and the user approved.
+Generators declare which slots exist. Extensions declare which slot(s) they hook into via `hooks_into`. The match is validated at gen-start time. Extensions don't get to inject arbitrary code anywhere - they get the slots the generator chose to expose, and they get only the host capabilities they declared and the user approved.
 
 ### 3.6 Config travels with the bucket
 
@@ -304,7 +304,7 @@ UX implication: generation is synchronous from the user's perspective. The dashb
 
 ### 3.11 v1 is single-tenant per generation (new)
 
-One VPS, serialized queue. One generation runs at a time across all Cellar customers. Latency = your gen time + queue wait. This is acceptable for v1 launch scale; multi-VPS fleet management and per-tenant isolation are v2 problems when load justifies them.
+One VPS, serialized queue. One generation runs at a time across all Buckets customers. Latency = your gen time + queue wait. This is acceptable for v1 launch scale; multi-VPS fleet management and per-tenant isolation are v2 problems when load justifies them.
 
 The wasmtime sandbox configuration assumes single-tenant: extensions only need to be isolated from the *host engine*, not from other tenants. Per-extension fuel limits and memory ceilings still apply (a runaway extension shouldn't hang the engine), but tenant-from-tenant isolation is a non-problem at v1 scale.
 
@@ -314,15 +314,15 @@ The wasmtime sandbox configuration assumes single-tenant: extensions only need t
 
 Most v0 open questions resolved during grilling. The residuals:
 
-### 4.1 — Resolved
+### 4.1 - Resolved
 Sandbox mechanism resolved as wasmtime (see 4.11 for remaining config details).
 
-### 4.2 — Resolved
+### 4.2 - Resolved
 Multi-forge data fetching: server-side, so CORS is not a constraint. Lives in `storm.commit-fetcher.v1` WASM extension with declared `fetch_external` capability. Host bridges that capability to `reqwest` or similar.
 
 ### 4.3 Browser key storage (downgraded urgency)
 
-Under server-side generation, the bucket key is used only at the end of a generation cycle (for the final round of PUTs), not continuously during gen. This reduces — though does not eliminate — XSS exposure.
+Under server-side generation, the bucket key is used only at the end of a generation cycle (for the final round of PUTs), not continuously during gen. This reduces - though does not eliminate - XSS exposure.
 
 **v1:** in-memory only (lost on reload, re-enter on next session). Acceptable because key entry is a one-time per-session ceremony, not a continuous-use credential.
 
@@ -332,14 +332,14 @@ Under server-side generation, the bucket key is used only at the end of a genera
 
 **v1:** bundled in the dashboard frontend, referenced by built-in IDs.
 
-**v2 (marketplace):** generators ship from a public Cellar bucket the dashboard fetches at runtime, with versioning via the manifest's `version` field and a Storm-signed integrity manifest.
+**v2 (marketplace):** generators ship from a public Buckets bucket the dashboard fetches at runtime, with versioning via the manifest's `version` field and a Storm-signed integrity manifest.
 
-### 4.5 — Resolved
+### 4.5 - Resolved
 Template engine: **Tera**. Pure Rust, Django/Jinja2-style, well-trodden in SSGs specifically (Zola precedent), supports conditionals + loops + inheritance + macros + filters which are all needed for the feature-toggle templates and collection iteration.
 
 ### 4.6 Manifest format
 
-**JSON** for generators, themes, extensions. AI-friendly, ubiquitous, no parser drama. (TOML for user-facing config files like `.storm/site.json` stays as v0 said — `.json` for site.json was already implicit; confirm during implementation.)
+**JSON** for generators, themes, extensions. AI-friendly, ubiquitous, no parser drama. (TOML for user-facing config files like `.storm/site.json` stays as v0 said - `.json` for site.json was already implicit; confirm during implementation.)
 
 ### 4.7 Generator validation at upload time (still deferred, depends on 4.9)
 
@@ -352,10 +352,10 @@ When user-contributed generators land (post-v1, post-marketplace-policy-decision
 
 All deferred until §4.9 lands.
 
-### 4.8 — Resolved
+### 4.8 - Resolved
 The Obsidian-vault generator example in §2.1 illustrates how the collection abstraction handles vault-shaped sites. Backlinks, transclusion, and file-tree navigation live in the `storm.obsidian-features.v1` WASM extension hooked into `markdown_transform` (rewrite `[[note]]` syntax to resolvable links during markdown parse) and `backlink_resolver` (compute backlinks per-note at render time using accumulated graph state).
 
-### 4.9 Extension marketplace contribution model (deferred — explicit)
+### 4.9 Extension marketplace contribution model (deferred - explicit)
 
 For v1: Storm-curated only. Storm builds and ships extensions; users compose them into generators but cannot submit their own.
 
@@ -393,15 +393,15 @@ Strip everything aspirational, the actual first shippable feature is:
   - **Obsidian-vault** (collection-shaped, exercises the `notes` collection)
 - **Themes:** at least 2 per generator (a light default and a dark Midnight-style), possibly shared across generators if token vocabulary overlaps.
 - **Two Storm-built WASM extensions:**
-  - **`storm.commit-fetcher.v1`** — fetches commit data from Forgejo / GitHub / GitLab / Codeberg / Sourcehut. Declares `fetch_external`. Used by Resume.
-  - **`storm.obsidian-features.v1`** — backlinks, `[[transclusion]]`, file-tree-nav. Declares `read_collection_content`. Used by Obsidian-vault.
+  - **`storm.commit-fetcher.v1`** - fetches commit data from Forgejo / GitHub / GitLab / Codeberg / Sourcehut. Declares `fetch_external`. Used by Resume.
+  - **`storm.obsidian-features.v1`** - backlinks, `[[transclusion]]`, file-tree-nav. Declares `read_collection_content`. Used by Obsidian-vault.
 - **The Rust engine** in `rust-spellbook-static`, refactored to load generators from manifests, with Tera replacing askama and wasmtime embedded. Two modes: CLI (used for the user's personal site) and server (used for Spell Site).
 - **A new dashboard route:** `Bucket → Spell Site` panel.
 - **A generation VPS** spun up and Pulse-managed, running the engine in server mode.
 - **Pass-through file streaming** from VPS → backend (broker) → browser → user's bucket.
 - **A serialized generation queue** in the backend; one gen at a time.
 
-That's the v1 cut. Everything else — marketplace, AI-generated generators, custom domains, fleet generation, async resumable gen, multi-collection generators, taxonomies, pagination, the `spell.site` domain — is downstream of v1 working end-to-end.
+That's the v1 cut. Everything else - marketplace, AI-generated generators, custom domains, fleet generation, async resumable gen, multi-collection generators, taxonomies, pagination, the `spell.site` domain - is downstream of v1 working end-to-end.
 
 ---
 
@@ -413,7 +413,7 @@ That's the v1 cut. Everything else — marketplace, AI-generated generators, cus
 - `spell.site` domain (depends on custom-domain feature, its own multi-week project).
 - Live previews during generation (just regenerate to see changes).
 - WASM game hosting as a generator type (the platform supports it via static file upload; doesn't need a generator).
-- Theme switching without regeneration (v2 maybe, if themes really are CSS-only — but v1 just regenerates).
+- Theme switching without regeneration (v2 maybe, if themes really are CSS-only - but v1 just regenerates).
 - Multi-tenant concurrent generation (v2; v1 is single-tenant serialized per §3.11).
 - VPS fleet management (v2; v1 is one VPS).
 - Async resumable generation (v2; v1 is sync per §3.10).
@@ -428,8 +428,8 @@ That's the v1 cut. Everything else — marketplace, AI-generated generators, cus
 For future-you / future-contributor to reconstruct how the spec arrived here:
 
 1. **Scope of grilling:** "the why" (purpose & characteristics), not seam audit or governance.
-2. **Engine audience identity:** "both" — personal NOW, general LATER, designed for that path. Initially flagged as the hardest of four options; vindicated by the eventual engine-reuse architecture (§3.9).
-3. **General-purpose audience:** Storm Cellar customers specifically, not Rust-SSG-niche or open-market SSG users.
+2. **Engine audience identity:** "both" - personal NOW, general LATER, designed for that path. Initially flagged as the hardest of four options; vindicated by the eventual engine-reuse architecture (§3.9).
+3. **General-purpose audience:** Storm Buckets customers specifically, not Rust-SSG-niche or open-market SSG users.
 4. **Template seam (early, pre-reframe):** orphaned by the spec reframe; revisited as §4.5 resolution = Tera.
 5. **Project relationship:** server-side Rust on dedicated VPS, Pulse-managed (the user's invented fifth option, off my multi-choice list).
 6. **Proceed past architecture shift:** keep grilling, don't pause.

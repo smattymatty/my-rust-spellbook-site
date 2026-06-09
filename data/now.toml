@@ -1,16 +1,16 @@
-# CURRENTLY — sidebar entries. Three sections (building / writing / contributing) are fixed.
+# CURRENTLY - sidebar entries. Three sections (building / writing / contributing) are fixed.
 #
 # Per-entry fields:
-#   name       — short title (required)
-#   note       — one-line subtitle (optional)
-#   href       — URL the name links to (optional)
-#   started_at — YYYY-MM-DD (optional; useful for future /now/history/ page)
-#   ended_at   — YYYY-MM-DD (optional; presence kicks the entry out of the sidebar)
+#   name       - short title (required)
+#   note       - one-line subtitle (optional)
+#   href       - URL the name links to (optional)
+#   started_at - YYYY-MM-DD (optional; useful for future /now/history/ page)
+#   ended_at   - YYYY-MM-DD (optional; presence kicks the entry out of the sidebar)
 
 [[building]]
-name = "Storm Cellar"
+name = "Storm Buckets"
 note = "Canadian S3-compatible storage"
-href = "https://stormdevelopments.ca/cellar"
+href = "https://stormdevelopments.ca/buckets"
 started_at = "2025-09-01"
 
 [[writing]]

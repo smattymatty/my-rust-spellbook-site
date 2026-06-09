@@ -10,16 +10,16 @@
     --border-rule: #262b34;
     --accent:      #c9a96e;
     --accent-dim:  #6b5a3a;
-    --phosphor:     #7eecb5;  /* structural only — frames and hairlines, never text */
+    --phosphor:     #7eecb5;  /* structural only - frames and hairlines, never text */
     --phosphor-dim: #2f5a44;
 
     /* Kind palette: one color per content kind. Each carries a distinct hue family
        so kinds read at a glance without overlapping phosphor (which tags own). */
-    --kind-post:         #d4b878;  /* warm gold — default voice */
-    --kind-newsletter:   #6ab7ff;  /* soft blue — broadcast */
-    --kind-contribution: #ff9966;  /* warm coral — handoff */
-    --kind-dispatch:     #d97ee0;  /* magenta — signal flare */
-    --kind-tutorial:     #4cc4c0;  /* teal — a guided path */
+    --kind-post:         #d4b878;  /* warm gold - default voice */
+    --kind-newsletter:   #6ab7ff;  /* soft blue - broadcast */
+    --kind-contribution: #ff9966;  /* warm coral - handoff */
+    --kind-dispatch:     #d97ee0;  /* magenta - signal flare */
+    --kind-tutorial:     #4cc4c0;  /* teal - a guided path */
 
     /* Type */
     --font-serif:  "Iowan Old Style", "Charter", Georgia, serif;
@@ -494,7 +494,7 @@ body {
     min-width: 0;
 }
 
-/* Profile picture slot — placeholder for now; drop in an <img> later */
+/* Profile picture slot - placeholder for now; drop in an <img> later */
 .profile-block { flex-shrink: 0; }
 
 .profile-pic {
@@ -659,7 +659,7 @@ body {
 }
 
 
-/* Resume link — small mono uppercase chip, used in the hero's bottom-right. */
+/* Resume link - small mono uppercase chip, used in the hero's bottom-right. */
 .resume-link {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -744,7 +744,7 @@ body {
     margin: 0;
 }
 
-/* ─── Currently (now) — three sub-sections ─────────── */
+/* ─── Currently (now) - three sub-sections ─────────── */
 
 .now-section { margin-bottom: var(--space-5); }
 .now-section:last-child { margin-bottom: 0; }
@@ -787,7 +787,7 @@ body {
     margin-top: 0.15rem;
 }
 
-/* ─── Founder block — top of the hero's right column ─────────── */
+/* ─── Founder block - top of the hero's right column ─────────── */
 
 .hero-founder {
     display: flex;
@@ -855,7 +855,7 @@ body {
     .hero-founder { align-items: flex-start; }
 }
 
-/* ─── Forges sidebar block — rhythm parallels CURRENTLY ─ */
+/* ─── Forges sidebar block - rhythm parallels CURRENTLY ─ */
 
 .forge-section { margin-bottom: var(--space-5); }
 .forge-section:last-child { margin-bottom: 0; }
@@ -981,7 +981,7 @@ body {
 
 .post-list a:hover .title { color: var(--accent); }
 
-/* ─── Featured posts — elevated cards above RECENT WRITING ──── */
+/* ─── Featured posts - elevated cards above RECENT WRITING ──── */
 
 .featured { margin-bottom: var(--space-8); }
 
@@ -997,7 +997,7 @@ body {
 .featured-list .featured-card:last-child { margin-bottom: 0; padding-bottom: var(--space-5); }
 
 .featured-list a {
-    /* override the .post-list a left-border hover trick — featured cards already have their own border */
+    /* override the .post-list a left-border hover trick - featured cards already have their own border */
     border-left: none;
     padding-left: 0;
     margin-left: 0;
@@ -1041,7 +1041,7 @@ body {
 .post-list-tags { font-size: 0.65rem; }
 .post-list-tags li { padding: 0.1rem 0.4rem; }
 
-/* Kind badge — category indicator above each post title.
+/* Kind badge - category indicator above each post title.
    One per kind; the modifier class colors it. */
 .post-kind {
     display: inline-block;
@@ -1284,19 +1284,19 @@ body {
     border-color: var(--accent-dim);
 }
 
-/* ─── "Own Your Stack" — newsletter identity ────────────
+/* ─── "Own Your Stack" - newsletter identity ────────────
    A body-level scope worn by the /newsletter/ index and by every newsletter
    issue page (the .oys class gets attached in Issues 2–3). It rebinds the
    page accent to the existing newsletter "broadcast" blue and styles the
    masthead bar.
 
-   Dormant until the .oys class is attached — adding this section changes
+   Dormant until the .oys class is attached - adding this section changes
    nothing on the current site. Tune the literal values right here.
    ──────────────────────────────────────────────────── */
 
 .oys {
     --accent:     var(--kind-newsletter);  /* broadcast blue replaces gold, page-wide */
-    --accent-dim: #2c4a66;                 /* dimmed blue — selection highlight */
+    --accent-dim: #2c4a66;                 /* dimmed blue - selection highlight */
 }
 
 /* The masthead bar: the "OWN YOUR STACK" identity block that opens the
@@ -1330,9 +1330,9 @@ body {
     letter-spacing: 0.06em;
 }
 
-/* ─── "Own Your Stack" landing page — /newsletter/ ──────
+/* ─── "Own Your Stack" landing page - /newsletter/ ──────
    Worn under the .oys scope, so --accent resolves to broadcast blue. The
-   issue list reuses .post-list / .post-kind from the homepage — no new
+   issue list reuses .post-list / .post-kind from the homepage - no new
    list rules here.
    ──────────────────────────────────────────────────── */
 
@@ -1360,7 +1360,7 @@ body {
     line-height: 1.5;
 }
 
-/* Subscribe affordance — the page's single call to action. The button
+/* Subscribe affordance - the page's single call to action. The button
    colour is --accent, which resolves to broadcast blue under .oys. */
 .oys-subscribe {
     margin-bottom: var(--space-8);
