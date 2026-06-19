@@ -42,7 +42,7 @@ fn split(src: &str) -> Result<Vec<Segment>> {
     let mut markdown = String::new();
     let mut rest = src;
 
-    while let Some(at) = rest.find("{~") {
+    while let Some(at) = find_tag_outside_fence(rest) {
         markdown.push_str(&rest[..at]);
         let (body, after) = tag_at(&rest[at..])?;
         if body.is_empty() {
@@ -79,6 +79,43 @@ fn split(src: &str) -> Result<Vec<Segment>> {
         segments.push(Segment::Markdown(markdown));
     }
     Ok(segments)
+}
+
+/// Byte offset of the next `{~` that is NOT inside a fenced code block
+/// (``` or ~~~), or None. This lets a post show literal SpellBlock syntax in a
+/// code fence - e.g. a guide documenting the syntax - without it being expanded.
+fn find_tag_outside_fence(s: &str) -> Option<usize> {
+    let mut offset = 0usize;
+    let mut fence: Option<&str> = None; // the marker (``` or ~~~) that opened the open fence
+    for line in s.split_inclusive('\n') {
+        let trimmed = line.trim_start();
+        let marker = if trimmed.starts_with("```") {
+            Some("```")
+        } else if trimmed.starts_with("~~~") {
+            Some("~~~")
+        } else {
+            None
+        };
+        match fence {
+            // Inside a fence: ignore `{~`; only a matching marker closes it.
+            Some(open) => {
+                if marker == Some(open) {
+                    fence = None;
+                }
+            }
+            // Outside a fence: a marker opens one; otherwise scan for `{~`.
+            None => match marker {
+                Some(m) => fence = Some(m),
+                None => {
+                    if let Some(pos) = line.find("{~") {
+                        return Some(offset + pos);
+                    }
+                }
+            },
+        }
+        offset += line.len();
+    }
+    None
 }
 
 /// Given a slice that starts with `{~`, return the trimmed tag body and the

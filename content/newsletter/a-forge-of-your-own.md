@@ -4,6 +4,8 @@ published_at: 2026-05-28
 kind: newsletter
 issue: 2
 featured: true
+cover: /media/images/newsletter/a-forge-of-your-own-cover.png
+cover_alt: "Own Your Stack, Issue 2 - A Forge of Your Own. Title over a circuit-board background."
 description: "GitHub is fracturing, but the more interesting story is what was never there in the first place. The forge layer has an open answer already running 320,000 projects in production."
 quote: Every other layer of your stack is replaceable infrastructure. The source code is the company.
 tags:
@@ -20,6 +22,8 @@ The more interesting story isn't who's leaving. It's what was never there in the
 If you run an organization that ships code, this is the year that decision becomes yours. The good news is that the answer already exists, in production, hosting roughly 320,000 projects. I started running it last year.
 
 The forge is called Forgejo - open source, self-hosted, AGPL-licensed, maintained by Codeberg e.V., a nonprofit in Berlin. Codeberg runs the flagship public instance. I run two of my own: a private one for my company's internal source, and gitforge.ca, a public generalist forge anyone can sign up for. Both on Canadian VPS hardware I operate.
+
+![The Forgejo project website on codeberg.org, showing the open-source, self-hosted forge.](/media/images/newsletter/inline/codeberg-forgejo-website.png)
 
 *(Reference: codeberg.org/forgejo/website)*
 

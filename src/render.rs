@@ -2,27 +2,24 @@ use askama::Template;
 use serde::Serialize;
 use crate::data::{Now, ConnectLink, ForgeEntry};
 
-pub struct ForgesGrouped {
-    pub work: Vec<ForgeEntry>,
-    pub open_source: Vec<ForgeEntry>,
-    pub contributing: Vec<ForgeEntry>,
+/// Forge entries grouped by category label, in first-seen order. The category
+/// string IS the section heading, so any label renders and nothing is silently
+/// dropped. (The old fixed WORK/OPEN SOURCE/CONTRIBUTING grouping hid every
+/// other category - a renamed "BUSINESS" simply vanished from the page.)
+pub struct ForgeGroup {
+    pub label: String,
+    pub entries: Vec<ForgeEntry>,
 }
 
-impl ForgesGrouped {
-    pub fn from_flat(entries: Vec<ForgeEntry>) -> Self {
-        let mut work = Vec::new();
-        let mut open_source = Vec::new();
-        let mut contributing = Vec::new();
-        for e in entries {
-            match e.category.as_str() {
-                "WORK" => work.push(e),
-                "OPEN SOURCE" => open_source.push(e),
-                "CONTRIBUTING" => contributing.push(e),
-                _ => {} // unknown category; silently dropped (could become validator concern later)
-            }
+pub fn group_forges(entries: Vec<ForgeEntry>) -> Vec<ForgeGroup> {
+    let mut groups: Vec<ForgeGroup> = Vec::new();
+    for e in entries {
+        match groups.iter_mut().find(|g| g.label == e.category) {
+            Some(g) => g.entries.push(e),
+            None => groups.push(ForgeGroup { label: e.category.clone(), entries: vec![e] }),
         }
-        Self { work, open_source, contributing }
     }
+    groups
 }
 
 #[derive(Serialize)]
@@ -33,11 +30,10 @@ pub struct Quote {
     pub post_date: String,   // formatted display date of the source post
 }
 
-/// The "Own Your Stack" identity carried by a newsletter issue page.
-/// `Some` on `Article` iff the post's kind is "newsletter".
+/// Marks an `Article` as a newsletter issue and carries its issue number for
+/// the meta strip. `Some` on `Article` iff the post's kind is "newsletter".
+/// (The masthead now lives in the cover image, so name/tagline aren't needed.)
 pub struct NewsletterIssue {
-    pub name: String,           // "Own Your Stack" - masthead
-    pub tagline: String,        // masthead tagline
     pub issue_display: String,  // zero-padded issue number, e.g. "001"
 }
 
@@ -50,6 +46,9 @@ pub struct PageMeta {
     pub og_description: String,  // og:description and <meta name="description">
     pub og_type: String,         // "website" or "article"
     pub og_image: String,        // absolute URL of the share image; "" omits the tag
+    pub og_image_alt: String,    // og:image:alt; "" omits the tag
+    pub published_time: String,  // RFC3339 article:published_time; "" omits (non-articles)
+    pub json_ld: String,         // schema.org JSON-LD, already serialized; "" omits the <script>
 }
 
 #[derive(Template)]
@@ -66,6 +65,18 @@ pub struct Article {
     pub breadcrumb_href: String,             // where the breadcrumb points
     pub breadcrumb_label: String,            // breadcrumb text after the arrow
     pub newsletter: Option<NewsletterIssue>, // Some -> render the Own Your Stack masthead
+    pub cover: Option<String>,               // site-root path; Some -> render a hero <figure>
+    pub cover_alt: String,                   // alt text for the hero image
+    pub related: Vec<RelatedPost>,           // sibling posts by shared tags; empty -> no block
+}
+
+/// A sibling post surfaced in the "Related" block at the foot of an article,
+/// chosen by shared tags. Just enough to render a link.
+pub struct RelatedPost {
+    pub title: String,
+    pub url: String,
+    pub kind_display: String,
+    pub published_at_display: String,
 }
 
 #[derive(Clone)]
@@ -82,6 +93,7 @@ pub struct Post {
     pub reading_time: u32,              // minutes, derived from body word count
     pub featured: bool,                 // sourced from frontmatter; drives FEATURED partition
     pub issue_display: Option<String>,  // zero-padded issue number; Some only for newsletters
+    pub cover: Option<String>,          // site-root path to cover image; feeds the featured thumbnail
     pub body: String,                   // rendered HTML body; feeds the Atom <content>
 }
 
@@ -92,7 +104,7 @@ pub struct Index {
     pub posts: Vec<Post>,            // RECENT WRITING - everything else
     pub now: Now,
     pub connect: Vec<ConnectLink>,
-    pub forges: ForgesGrouped,
+    pub forges: Vec<ForgeGroup>,
     pub quotes_json: String,
     pub meta: PageMeta,
 }

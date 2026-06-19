@@ -4,6 +4,11 @@
 
 {% block content %}
 <section class="hero">
+    <div class="profile-block">
+        <div class="profile-pic">
+            <img src="/media/images/mathew.png" alt="Mathew Storm" width="128" height="128" loading="eager" decoding="async">
+        </div>
+    </div>
     <div class="hero-text">
         <p class="lede">
             Open Source engineer, writer, operator.
@@ -18,17 +23,11 @@
             <a class="hero-founder-name" href="https://stormdevelopments.ca">Storm Developments</a>
             <p class="hero-founder-desc">Canadian cloud infrastructure on open source.</p>
             <p class="hero-founder-creed">&#127464;&#127462; Sovereignty. Sustainability. Security.</p>
-            <p class="hero-founder-why">This is why Storm Developments exists. <a href="https://stormdevelopments.ca/guide/why-we-built-this/">Learn more &rarr;</a></p>
         </div>
     </aside>
 </section>
 
 <div class="quote-zone">
-    <div class="profile-block">
-        <div class="profile-pic" aria-label="profile photo">
-            <span class="profile-pic-placeholder">MS</span>
-        </div>
-    </div>
     <div class="quote-region">
         <section class="quote-panel" aria-label="rotating pull-quote">
             <blockquote class="quote-body">
@@ -59,6 +58,9 @@
                 {% for post in featured_posts %}
                 <li class="featured-card">
                     <a href="{{ post.url }}">
+                        {% if let Some(thumb) = post.cover %}
+                        <span class="featured-thumb"><img src="{{ thumb }}" alt="" loading="lazy" decoding="async"></span>
+                        {% endif %}
                         <span class="post-kind post-kind--{{ post.kind }}">{{ post.kind_display }}</span>
                         <span class="title">{{ post.title }}</span>
                         {% if let Some(desc) = post.description %}
@@ -88,21 +90,26 @@
                 {% for post in posts %}
                 <li>
                     <a href="{{ post.url }}">
-                        <span class="post-kind post-kind--{{ post.kind }}">{{ post.kind_display }}</span>
-                        <span class="title">{{ post.title }}</span>
-                        {% if let Some(desc) = post.description %}
-                            <span class="description">{{ desc }}</span>
+                        {% if let Some(thumb) = post.cover %}
+                        <span class="post-thumb"><img src="{{ thumb }}" alt="" loading="lazy" decoding="async"></span>
                         {% endif %}
-                        <div class="post-meta">
-                            <span class="post-date">{{ post.published_at_display }}</span>
-                            <span class="post-meta-sep">&middot;</span>
-                            <span class="post-time">{{ post.reading_time }}m</span>
-                            {% if !post.tags.is_empty() %}
-                            <span class="post-meta-sep">&middot;</span>
-                            <ul class="tags post-list-tags">
-                                {% for tag in post.tags %}<li>{{ tag }}</li>{% endfor %}
-                            </ul>
+                        <div class="post-entry-main">
+                            <span class="post-kind post-kind--{{ post.kind }}">{{ post.kind_display }}</span>
+                            <span class="title">{{ post.title }}</span>
+                            {% if let Some(desc) = post.description %}
+                                <span class="description">{{ desc }}</span>
                             {% endif %}
+                            <div class="post-meta">
+                                <span class="post-date">{{ post.published_at_display }}</span>
+                                <span class="post-meta-sep">&middot;</span>
+                                <span class="post-time">{{ post.reading_time }}m</span>
+                                {% if !post.tags.is_empty() %}
+                                <span class="post-meta-sep">&middot;</span>
+                                <ul class="tags post-list-tags">
+                                    {% for tag in post.tags %}<li>{{ tag }}</li>{% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
                         </div>
                     </a>
                 </li>
@@ -161,41 +168,17 @@
         <section class="side-block">
             <h2 class="section-label">FORGES</h2>
 
-            {% if !forges.work.is_empty() %}
+            {% for group in forges %}
             <div class="forge-section">
-                <h3 class="forge-section-key">WORK</h3>
-                {% for entry in forges.work %}
+                <h3 class="forge-section-key">{{ group.label }}</h3>
+                {% for entry in group.entries %}
                 <a class="forge-entry" href="{{ entry.url }}">
                     <span class="forge-entry-name">{{ entry.name }}</span>
                     <span class="forge-entry-display">{{ entry.display }}</span>
                 </a>
                 {% endfor %}
             </div>
-            {% endif %}
-
-            {% if !forges.open_source.is_empty() %}
-            <div class="forge-section">
-                <h3 class="forge-section-key">OPEN SOURCE</h3>
-                {% for entry in forges.open_source %}
-                <a class="forge-entry" href="{{ entry.url }}">
-                    <span class="forge-entry-name">{{ entry.name }}</span>
-                    <span class="forge-entry-display">{{ entry.display }}</span>
-                </a>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% if !forges.contributing.is_empty() %}
-            <div class="forge-section">
-                <h3 class="forge-section-key">CONTRIBUTING</h3>
-                {% for entry in forges.contributing %}
-                <a class="forge-entry" href="{{ entry.url }}">
-                    <span class="forge-entry-name">{{ entry.name }}</span>
-                    <span class="forge-entry-display">{{ entry.display }}</span>
-                </a>
-                {% endfor %}
-            </div>
-            {% endif %}
+            {% endfor %}
         </section>
 
         <section class="side-block">
@@ -203,8 +186,7 @@
             <ul class="connect-list">
                 {% for link in connect %}
                 <li>
-                    <span class="key">{{ link.key }}</span>
-                    <a href="{{ link.href }}">{{ link.label }}</a>
+                    <a class="connect-link" href="{{ link.href }}" rel="me">{{ link.key }}</a>
                 </li>
                 {% endfor %}
             </ul>

@@ -53,8 +53,7 @@ impl Clone for NowEntry {
 
 #[derive(Debug, Deserialize)]
 pub struct ConnectLink {
-    pub key: String,
-    pub label: String,
+    pub key: String,   // shown text AND the link (e.g. "LINKEDIN", "MASTODON")
     pub href: String,
 }
 
@@ -71,6 +70,21 @@ pub struct Site {
     pub base_url: String,    // public origin readers arrive at; no trailing slash
     pub description: String, // site-wide meta/OG description; fallback for posts without one
     pub og_image: String,    // path to the social-share image (e.g. "/og-image.png"); "" = none
+    #[serde(default)]
+    pub person: Person,      // identity for schema.org JSON-LD (Person / author / publisher)
+}
+
+/// The author identity emitted as schema.org JSON-LD. Drives Google's entity
+/// understanding (Knowledge Panel candidacy) and the author/publisher fields on
+/// every article. Optional in site.toml; an empty name omits the Person node.
+#[derive(Debug, Deserialize, Default)]
+pub struct Person {
+    #[serde(default)]
+    pub name: String,        // "Mathew Storm"
+    #[serde(default)]
+    pub job_title: String,   // "Cloud Infrastructure Engineer ..."
+    #[serde(default)]
+    pub same_as: Vec<String>, // canonical profile URLs (LinkedIn, GitHub, company)
 }
 
 #[derive(Debug, Deserialize)]

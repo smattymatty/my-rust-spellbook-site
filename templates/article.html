@@ -9,14 +9,13 @@
     <span class="date">{{ published_at_display }}</span>
 </nav>
 
-{% if let Some(nl) = newsletter %}
-<header class="oys-masthead">
-    <p class="oys-masthead-name">{{ nl.name }}</p>
-    <p class="oys-masthead-tagline">{{ nl.tagline }}</p>
-</header>
-{% endif %}
-
 <article class="post">
+    {% if let Some(cover_src) = cover %}
+    <figure class="post-cover">
+        <img src="{{ cover_src }}" alt="{{ cover_alt }}" loading="eager" decoding="async">
+    </figure>
+    {% endif %}
+
     <h1>{{ title }}</h1>
 
     <dl class="meta-strip">
@@ -68,6 +67,23 @@
         {{ body|safe }}
     </div>
 </article>
+
+{% if !related.is_empty() %}
+<aside class="related" aria-label="related writing">
+    <h2 class="related-title">RELATED</h2>
+    <ul class="related-list">
+        {% for r in related %}
+        <li>
+            <a class="related-entry" href="{{ r.url }}">
+                <span class="related-kind">{{ r.kind_display }}</span>
+                <span class="related-name">{{ r.title }}</span>
+                <span class="related-date">{{ r.published_at_display }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</aside>
+{% endif %}
 
 <nav class="post-foot">
     <a href="/">[ &uarr; all writing ]</a>

@@ -307,6 +307,49 @@ body {
     width: 30%;
 }
 
+/* ─── Images (responsive; never overflow the reading column) ─ */
+
+/* Inline body images (markdown ![]()). height:auto keeps aspect ratio;
+   max-width:100% keeps them inside --measure on every viewport. */
+.post-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: var(--space-5) auto;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--bg-elev);
+}
+
+/* A reference line (e.g. *(Reference: ...)*) sitting right under an image
+   reads as that image's caption: centered, small, muted, snug to the image. */
+.post-body img + p em {
+    font-style: normal;
+}
+.post-body img + p {
+    margin-top: calc(var(--space-5) * -1 + var(--space-3));
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--fg-faint);
+    font-family: var(--font-mono);
+}
+
+/* Cover hero: full-width above the title. Fixed 1200x630 aspect ratio reserves
+   the space before the image loads, so the LCP element causes no layout shift. */
+.post-cover {
+    margin: 0 0 var(--space-6);
+}
+.post-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border: 1px solid var(--border-rule);
+    border-radius: 3px;
+    background: var(--bg-elev);
+}
+
 /* ─── Breadcrumb (terminal path syntax) ─────────────── */
 
 .breadcrumb {
@@ -424,16 +467,89 @@ body {
     border-color: var(--phosphor-dim);
 }
 
+/* ─── Related posts (shared-tag cluster at the article foot) ─ */
+
+.related {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border-rule);
+}
+
+.related-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--fg-muted);
+    margin: 0 0 var(--space-4);
+}
+
+.related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.related-entry {
+    display: grid;
+    grid-template-columns: 8rem 1fr auto;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    text-decoration: none;
+    transition: border-color 150ms, background 150ms;
+}
+
+.related-entry:hover {
+    border-color: var(--accent-dim);
+    background: var(--bg-elev);
+}
+
+.related-kind {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--fg-faint);
+}
+
+.related-name {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--fg);
+    min-width: 0;
+}
+
+.related-entry:hover .related-name { color: var(--accent); }
+
+.related-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--fg-faint);
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .related-entry {
+        grid-template-columns: 1fr;
+        gap: var(--space-1);
+    }
+}
+
 /* ─── Index page: hero + sidebar layout ────────────── */
 
 .hero {
     margin: 0 0 var(--space-6);
     display: flex;
-    align-items: stretch;
-    gap: var(--space-7);
+    align-items: center;
+    gap: var(--space-6);
 }
 
-.hero-text { flex: 1; min-width: 0; }
+.hero-text { flex: 1; min-width: 0; text-align: center; }
 
 .hero-aside {
     flex-shrink: 0;
@@ -449,6 +565,7 @@ body {
 @media (max-width: 820px) {
     .hero {
         flex-direction: column;
+        align-items: flex-start;
         gap: var(--space-5);
     }
     .hero-aside {
@@ -462,7 +579,7 @@ body {
     font-size: 1.7rem;
     line-height: 1.35;
     color: var(--fg);
-    margin: 0 0 var(--space-4);
+    margin: 0 auto var(--space-4);
     letter-spacing: -0.018em;
     max-width: 58ch;
     font-weight: 500;
@@ -472,7 +589,7 @@ body {
     color: var(--fg-muted);
     font-size: 1.1rem;
     line-height: 1.5;
-    margin: 0;
+    margin: 0 auto;
     max-width: 60ch;
 }
 
@@ -494,19 +611,41 @@ body {
     min-width: 0;
 }
 
-/* Profile picture slot - placeholder for now; drop in an <img> later */
+/* Profile photo - sits at the left of the hero row, beside the lede. */
 .profile-block { flex-shrink: 0; }
 
 .profile-pic {
-    width: 7rem;
-    height: 7rem;
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    position: relative;
     overflow: hidden;
+    background: var(--bg-elev);
+    /* Layered ring: a thin gold edge, a dark "holder" ring that blends into
+       the page, and a soft shadow that grounds the disc on the dark site. */
+    box-shadow:
+        0 0 0 1px var(--accent-dim),
+        0 0 0 5px var(--bg-elev),
+        0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+
+/* Vignette: fades the photo's bright background into the dark frame at the
+   edges, so the white corner no longer jars against the site. */
+.profile-pic::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 16px 6px var(--bg);
+    pointer-events: none;
 }
 
 .profile-pic-placeholder {
@@ -834,23 +973,6 @@ body {
     line-height: 1.5;
 }
 
-.hero-founder-why {
-    font-size: 0.82rem;
-    line-height: 1.5;
-    color: var(--fg-muted);
-    margin: 0;
-}
-
-.hero-founder-why a {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent-dim);
-    transition: border-color 150ms;
-    white-space: nowrap;
-}
-
-.hero-founder-why a:hover { border-bottom-color: var(--accent); }
-
 @media (max-width: 820px) {
     .hero-founder { align-items: flex-start; }
 }
@@ -906,29 +1028,25 @@ body {
 
 .connect-list li {
     margin-bottom: var(--space-3);
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
 }
 
-.connect-list .key {
+/* The key (LINKEDIN, MASTODON, EMAIL) is itself the link - accent colour and a
+   persistent underline so it reads as clickable, not as a section label. */
+.connect-list .connect-link {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: var(--fg-faint);
-}
-
-.connect-list a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-dim);
-    font-size: 0.92rem;
-    word-break: break-word;
-    transition: border-color 150ms;
+    transition: color 150ms, border-color 150ms;
 }
 
-.connect-list a:hover { border-bottom-color: var(--accent); }
+.connect-list .connect-link:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
 
 /* ─── Post list (inside the writing section) ───────── */
 
@@ -981,6 +1099,39 @@ body {
 
 .post-list a:hover .title { color: var(--accent); }
 
+/* Mini thumbnail in RECENT WRITING only - a small cover beside the text, not
+   the full banner the featured card and newsletter index use. */
+.writing .post-list a {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+}
+
+.writing .post-list .post-thumb {
+    flex: 0 0 auto;
+    width: 7.5rem;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border-rule);
+}
+
+.writing .post-list .post-thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+}
+
+.writing .post-list .post-entry-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+@media (max-width: 520px) {
+    .writing .post-list .post-thumb { width: 5rem; }
+}
+
 /* ─── Featured posts - elevated cards above RECENT WRITING ──── */
 
 .featured { margin-bottom: var(--space-8); }
@@ -995,6 +1146,25 @@ body {
 }
 
 .featured-list .featured-card:last-child { margin-bottom: 0; padding-bottom: var(--space-5); }
+
+/* Cover thumbnail: a wide banner atop a featured card or a newsletter issue. */
+.featured-list .featured-thumb,
+.oys-issues .issue-thumb {
+    display: block;
+    margin: 0 0 var(--space-4);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border-rule);
+}
+
+.featured-list .featured-thumb img,
+.oys-issues .issue-thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+}
 
 .featured-list a {
     /* override the .post-list a left-border hover trick - featured cards already have their own border */

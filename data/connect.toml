@@ -1,9 +1,12 @@
+# CONNECT - the sidebar links. `key` is both the label and the link text.
 [[links]]
 key = "LINKEDIN"
-label = "linkedin.com/in/mathew-storm"
 href = "https://www.linkedin.com/in/mathew-storm-70b671384/"
 
 [[links]]
+key = "MASTODON"
+href = "https://socialontario.ca/@smattymatty"
+
+[[links]]
 key = "EMAIL"
-label = "mathew@stormdevelopments.ca"
 href = "mailto:mathew@stormdevelopments.ca"

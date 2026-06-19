@@ -1,9 +1,9 @@
-# FORGES - where my code lives. Three categories, one entry each at present.
-# Category strings: "WORK" | "OPEN SOURCE" | "CONTRIBUTING".
-# Add a fourth entry by appending another [[entry]] table.
+# FORGES - where my code lives. The `category` string is used verbatim as the
+# section heading on the page (in first-seen order), so any label works - rename
+# freely. Add an entry by appending another [[entry]] table.
 
 [[entry]]
-category = "WORK"
+category = "BUSINESS"
 name = "Storm Forge"
 url = "https://git.stormdevelopments.ca/mathew"
 display = "git.stormdevelopments.ca/mathew"
@@ -15,7 +15,7 @@ url = "https://github.com/smattymatty"
 display = "github.com/smattymatty"
 
 [[entry]]
-category = "CONTRIBUTING"
-name = "Deuxfleurs"
-url = "https://git.deuxfleurs.fr/smattymatty"
-display = "git.deuxfleurs.fr/smattymatty"
+category = "SELF-HOSTED"
+name = "gitforge.ca"
+url = "https://gitforge.ca/Mathew"
+display = "gitforge.ca/Mathew"

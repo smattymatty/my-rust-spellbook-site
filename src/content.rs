@@ -31,6 +31,13 @@ pub struct Frontmatter {
     pub quote: Option<String>,   // a pull-quote from this post; feeds the index rotation
     #[serde(default)]
     pub featured: bool,          // elevates the post into the FEATURED slot above RECENT WRITING
+    #[serde(default)]
+    pub cover: Option<String>,   // site-root path to the post's cover image, e.g.
+                                 // "/media/images/newsletter/foo.png". Becomes the
+                                 // og:image (social card) AND a hero atop the article.
+    #[serde(default)]
+    pub cover_alt: Option<String>, // alt text / og:image:alt for the cover. Strongly
+                                   // recommended whenever `cover` is set (a11y + SEO).
 }
 
 fn default_kind() -> String { "post".to_string() }

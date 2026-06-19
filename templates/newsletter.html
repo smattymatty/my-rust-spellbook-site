@@ -40,6 +40,9 @@
             {% for issue in issues %}
             <li>
                 <a href="{{ issue.url }}">
+                    {% if let Some(thumb) = issue.cover %}
+                    <span class="issue-thumb"><img src="{{ thumb }}" alt="" loading="lazy" decoding="async"></span>
+                    {% endif %}
                     {% if let Some(n) = issue.issue_display %}
                     <span class="post-kind post-kind--newsletter">ISSUE {{ n }}</span>
                     {% endif %}

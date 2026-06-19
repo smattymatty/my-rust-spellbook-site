@@ -3,7 +3,9 @@ title: The Internet Wasn't Inevitable
 published_at: 2026-05-14
 kind: newsletter
 issue: 1
-featured: true
+featured: false
+cover: /media/images/newsletter/the-internet-wasnt-inevitable-cover.png
+cover_alt: "Own Your Stack, Issue 1 - The Internet Wasn't Inevitable. Title over a circuit-board background."
 description: "Three layers of infrastructure had to fight to become open: Linux won, Django won, and now the storage layer is being decided."
 quote: The fact that the modern web is mostly open is not a gift from the companies that owned most of it. It's the residue of a fight they lost.
 tags:
@@ -22,6 +24,8 @@ If Microsoft or Sun had won the early infrastructure battle, the internet would 
 
 You probably don't think about Linux. That's how completely it won. It runs your phone if it's an Android. It runs the server that delivered this newsletter to you. It runs the routers between your laptop and that server, every one of the world's top 500 supercomputers, and the in-flight entertainment system on the plane you most recently flew. Infrastructure is most successful when you stop noticing it.
 
+![Bar chart: the global Linux operating system market growing from $7.64 billion in 2024 to $18.73 billion in 2029, a 19.8% CAGR.](/media/images/newsletter/inline/linux-market-2025.png)
+
 *(Reference: The Business Research Company)*
 
 The completeness of the win is the part that's easy to forget. In 2001, Microsoft's CEO Steve Ballmer called Linux "a cancer that attaches itself in an intellectual property sense to everything it touches." In 2014, the next Microsoft CEO stood on a stage and said "Microsoft loves Linux." Today, the Microsoft Azure fleet runs more Linux instances than Windows ones. The company that fought hardest to keep the open layer from existing now makes most of its cloud revenue serving it.
@@ -33,6 +37,8 @@ The reason it won is the reason it keeps winning whenever the same fight gets fo
 The same fight got fought at the application layer in the late 2000s, and the same side won. The expensive answer was a Java EE application server from Oracle, IBM's WebSphere, or Microsoft's .NET stack - software you paid licensing fees for, deployed onto hardware you also paid for, and could not modify without violating your support contract. The free answer was Django, a Python web framework released in 2005 by two newspaper developers in Lawrence, Kansas, who needed to ship local news sites faster than their deadlines allowed. They gave it away, letting it get used and improved by the community.
 
 By 2012, Instagram was serving a hundred million users on Django. By 2019, it was serving a billion. The proprietary application servers that Oracle and IBM had spent decades selling to enterprise customers are still around, technically - you can still buy WebLogic if you want to - but no new company has started a serious project on one in years. The framework layer is open the same way the operating system layer is open: not because the closed vendors gave up the fight, but because the open option got so good that paying for the closed one stopped making sense.
+
+![Diagram of Instagram's backend tech stack: Nginx fronting Django and Celery, all backed by Cassandra, PostgreSQL, Memcache, and RabbitMQ.](/media/images/newsletter/inline/instagram-backend-stack.png)
 
 *(Reference: Ollayor's Blog)*
 

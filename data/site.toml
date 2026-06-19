@@ -16,4 +16,22 @@ description = "Building open infrastructure in Canada. Writing about digital sov
 # og_image - path to the 1200x630 social-share image used in link previews.
 # Leave empty to omit the og:image tag. To add one: drop a PNG at
 # static/media/images/og-image.png and set this to "/media/images/og-image.png".
+# This is the SITE-WIDE fallback; any post with its own `cover:` frontmatter
+# overrides it for that post's card. Empty for now: drop a 1200x630 PNG at
+# static/media/images/og-image.png and set this to "/media/images/og-image.png"
+# to give the home page and cover-less posts a rich card.
 og_image = ""
+
+# [person] - identity emitted as schema.org JSON-LD (the author/publisher of
+# every article, and the Person behind the WebSite). This is what lets Google
+# resolve "Mathew Storm" to a single entity. same_as lists your canonical
+# profiles - keep them accurate; Google follows them to confirm the identity.
+[person]
+name = "Mathew Storm"
+job_title = "Cloud Infrastructure Engineer & Founder, Storm Developments"
+same_as = [
+    "https://www.linkedin.com/in/mathew-storm-70b671384/",
+    "https://github.com/smattymatty",
+    "https://socialontario.ca/@smattymatty",
+    "https://stormdevelopments.ca",
+]

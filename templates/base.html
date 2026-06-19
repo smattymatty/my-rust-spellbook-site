@@ -8,14 +8,20 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="canonical" href="{{ meta.canonical_url }}">
     <meta name="description" content="{{ meta.og_description }}">
+    <meta name="author" content="Mathew Storm">
     <meta property="og:site_name" content="mathewstorm.ca">
+    <meta property="og:locale" content="en_CA">
     <meta property="og:type" content="{{ meta.og_type }}">
     <meta property="og:title" content="{{ meta.og_title }}">
     <meta property="og:description" content="{{ meta.og_description }}">
     <meta property="og:url" content="{{ meta.canonical_url }}">
+    {% if !meta.published_time.is_empty() %}<meta property="article:published_time" content="{{ meta.published_time }}">
+    <meta property="article:author" content="Mathew Storm">{% endif %}
     {% if !meta.og_image.is_empty() %}<meta property="og:image" content="{{ meta.og_image }}">
+    {% if !meta.og_image_alt.is_empty() %}<meta property="og:image:alt" content="{{ meta.og_image_alt }}">{% endif %}
     <meta name="twitter:card" content="summary_large_image">{% else %}<meta name="twitter:card" content="summary">{% endif %}
     {% if meta.body_class == "oys" %}<link rel="alternate" type="application/atom+xml" title="Own Your Stack" href="/newsletter/feed.xml">{% endif %}
+    {% if !meta.json_ld.is_empty() %}<script type="application/ld+json">{{ meta.json_ld|safe }}</script>{% endif %}
     {% block head %}{% endblock %}
 </head>
 <body id="top"{% if !meta.body_class.is_empty() %} class="{{ meta.body_class }}"{% endif %}>
@@ -24,7 +30,6 @@
         <nav class="site-nav">
             <a href="/">Writing</a>
             <a href="/newsletter/">Newsletter</a>
-            <a href="https://resume.mathewstorm.ca">Resume</a>
         </nav>
     </header>
     <main class="site-main">
@@ -35,7 +40,7 @@
             <span class="footer-brand"><img class="brand-mark" src="/media/images/favicon.svg" alt="" aria-hidden="true">mathewstorm.ca</span>
             <span class="footer-status"><span class="status-dot"></span>ONLINE &middot; ONTARIO &middot; 2026</span>
         </div>
-        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; <a href="#top">&uarr; back to top</a></p>
+        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="https://stormdevelopments.ca/buckets">Storm Buckets</a> &middot; <a href="#top">&uarr; back to top</a></p>
     </footer>
     <script src="/assets/js/quotes.js" defer></script>
     <script src="/assets/js/copy-button.js" defer></script>
