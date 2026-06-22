@@ -3,7 +3,7 @@ title: A Forge of Your Own
 published_at: 2026-05-28
 kind: newsletter
 issue: 2
-featured: true
+featured: false
 cover: /media/images/newsletter/a-forge-of-your-own-cover.png
 cover_alt: "Own Your Stack, Issue 2 - A Forge of Your Own. Title over a circuit-board background."
 description: "GitHub is fracturing, but the more interesting story is what was never there in the first place. The forge layer has an open answer already running 320,000 projects in production."

@@ -55,6 +55,7 @@ pub struct PageMeta {
 #[template(path = "article.html")]
 pub struct Article {
     pub title: String,
+    pub kind: String,                        // raw slug; drives the philosophy disclaimer banner
     pub tags: Vec<String>,
     pub body: String,
     pub published_at_display: String,
@@ -116,6 +117,16 @@ pub struct NewsletterIndex {
     pub name: String,            // masthead name
     pub tagline: String,         // masthead tagline
     pub issues: Vec<Post>,       // newsletter-kind posts, newest first
+}
+
+/// The /philosophy/ landing page: an intro disclaimer plus the list of essays.
+/// Philosophy essays are personal writing, walled off into their own section but
+/// still surfaced in the home feed and sitemap.
+#[derive(Template)]
+#[template(path = "philosophy.html")]
+pub struct PhilosophyIndex {
+    pub meta: PageMeta,
+    pub essays: Vec<Post>,       // philosophy-kind posts, newest first
 }
 
 #[derive(Template)]

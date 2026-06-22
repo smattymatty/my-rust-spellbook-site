@@ -4,7 +4,7 @@ published_at: 2026-06-19
 kind: post
 featured: false
 description: "Why I rebuilt my personal site as a static site generator in Rust - the Spellbook lineage from Django, compile-time templates with Askama, and hosting the whole thing on my own Storm Buckets."
-quote: A personal site should be something you own end to end - the generator, the HTML it spits out, and the bucket it lives in.
+quote: I maintain Django Spellbook [...] But Django is a lot of machine for a personal site. [...] So I built the Rust version of the idea.
 tags:
   - rust
   - static-site-generator
@@ -48,7 +48,7 @@ The pipeline is small and boring on purpose. Boring is a feature.
 
 **Compile-time templates with Askama.** This is the part I love most. [Askama](https://crates.io/crates/askama) checks your templates *at compile time* - the variables, the loops, the conditionals, all type-checked against Rust structs before the binary even exists. If I reference a field that isn't there, it's a compiler error, not a blank space on a live page. It feels like the templating equivalent of a seatbelt, and after years of runtime template errors it's a genuine relief.
 
-**Data in TOML, not in code.** The sidebar, the "currently building" list, the forge links, the site config - all of it lives in plain `.toml` files. Editing what's on the page never meanhs recompiling logic; it means editing a data file. Clean separation between the machine and the content.
+**Data in TOML, not in code.** The sidebar, the "currently building" list, the forge links, the site config - all of it lives in plain `.toml` files. Editing what's on the page never means recompiling logic; it means editing a data file. Clean separation between the machine and the content.
 
 **SpellBlocks.** This is the Spellbook lineage showing through. Plain Markdown can't do callouts, cards, or accordions, so I built a small block syntax on top of it:
 

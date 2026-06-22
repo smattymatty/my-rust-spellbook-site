@@ -103,8 +103,11 @@ fn main() -> Result<()> {
         println!("wrote {} ({})", written.display(), prep.article.title);
     }
 
-    // Collect pull-quotes from every post that has one, for the index rotation panel.
+    // Collect pull-quotes from every post that has one, for the index rotation
+    // panel. Philosophy is personal writing and never feeds the rotation, even
+    // if an essay carries a `quote`.
     let quotes: Vec<render::Quote> = posts.iter()
+        .filter(|p| p.kind != "philosophy")
         .filter_map(|p| {
             p.quote.as_ref().map(|q| render::Quote {
                 text: q.clone(),
@@ -126,14 +129,25 @@ fn main() -> Result<()> {
         .collect();
     newsletter_issues.sort_by(|a, b| b.published_at.cmp(&a.published_at));
 
+    // Philosophy essays, newest first - the /philosophy/ landing page lists these.
+    // Personal writing, walled into its own section but still left in the home feed.
+    let mut philosophy_essays: Vec<render::Post> = posts
+        .iter()
+        .filter(|p| p.kind == "philosophy")
+        .cloned()
+        .collect();
+    philosophy_essays.sort_by(|a, b| b.published_at.cmp(&a.published_at));
+
     // Sitemap entries - every page. Built before the partition consumes `posts`.
-    // The home page's lastmod tracks the newest post anywhere; the newsletter
-    // index tracks the newest issue. Both give crawlers a real freshness signal.
+    // The home page's lastmod tracks the newest post anywhere; the section indexes
+    // track their newest entry. Both give crawlers a real freshness signal.
     let newest_post_date = posts.iter().map(|p| &p.published_at).max().cloned();
     let newest_issue_date = newsletter_issues.first().map(|p| p.published_at.clone());
+    let newest_philosophy_date = philosophy_essays.first().map(|p| p.published_at.clone());
     let mut sitemap_urls = vec![
         render::SitemapUrl { loc: format!("{}/", site.base_url), lastmod: newest_post_date },
         render::SitemapUrl { loc: format!("{}/newsletter/", site.base_url), lastmod: newest_issue_date },
+        render::SitemapUrl { loc: format!("{}/philosophy/", site.base_url), lastmod: newest_philosophy_date },
     ];
     for p in &posts {
         sitemap_urls.push(render::SitemapUrl {
@@ -213,6 +227,26 @@ fn main() -> Result<()> {
     let written = output::write_at(output_root, "newsletter/index.html", &newsletter_html)?;
     println!("wrote {} ({} issue(s))", written.display(), newsletter_page.issues.len());
 
+    // The /philosophy/ landing page - the personal-writing disclaimer and the
+    // essay list. Renders even when empty, so the section URL always resolves.
+    let philosophy_page = render::PhilosophyIndex {
+        meta: render::PageMeta {
+            canonical_url: format!("{}/philosophy/", site.base_url),
+            body_class: "philo".to_string(),
+            og_title: "Philosophy - mathewstorm.ca".to_string(),
+            og_description: "Personal philosophical writing - separate from my engineering work, though it informs how and why I build.".to_string(),
+            og_type: "website".to_string(),
+            og_image: og_image_url(&site),
+            og_image_alt: if site.og_image.is_empty() { String::new() } else { "Mathew Storm".to_string() },
+            published_time: String::new(),
+            json_ld: philosophy_collection_json_ld(&site, &philosophy_essays),
+        },
+        essays: philosophy_essays.clone(),
+    };
+    let philosophy_html = philosophy_page.render().context("rendering philosophy index")?;
+    let written = output::write_at(output_root, "philosophy/index.html", &philosophy_html)?;
+    println!("wrote {} ({} essay(s))", written.display(), philosophy_page.essays.len());
+
     // The Atom feed - newsletter issues only. Absolute URLs and RFC3339
     // timestamps; published_at is YYYY-MM-DD, so midnight UTC is appended.
     let feed_updated = newsletter_issues
@@ -278,10 +312,10 @@ fn prepare_article(
     // scope, the masthead, an issue number, and a breadcrumb back to the
     // newsletter home. Every other post keeps the plain article treatment.
     let body_class = if is_newsletter { "oys".to_string() } else { String::new() };
-    let (breadcrumb_href, breadcrumb_label) = if is_newsletter {
-        ("/newsletter/".to_string(), "all issues".to_string())
-    } else {
-        ("/".to_string(), "all writing".to_string())
+    let (breadcrumb_href, breadcrumb_label) = match kind.as_str() {
+        "newsletter" => ("/newsletter/".to_string(), "all issues".to_string()),
+        "philosophy" => ("/philosophy/".to_string(), "all essays".to_string()),
+        _ => ("/".to_string(), "all writing".to_string()),
     };
     let newsletter = is_newsletter.then(|| render::NewsletterIssue {
         // The validator guarantees a newsletter issue carries `issue`.
@@ -300,9 +334,16 @@ fn prepare_article(
     let og_image_alt = if og_image.is_empty() { String::new() } else { cover_alt.clone() };
     let og_description = description.clone().unwrap_or_else(|| site.description.clone());
 
+    // Entities this post is `about`: every registered entity whose tag the post
+    // carries. Drives the schema.org `about` on the BlogPosting.
+    let about: Vec<data::Entity> = site.entities.iter()
+        .filter(|e| tags.contains(&e.tag))
+        .cloned()
+        .collect();
+
     let json_ld = article_json_ld(
         site, &title, &og_description, &canonical_url, &published_at,
-        cover.as_deref(), &breadcrumb_href, &breadcrumb_label,
+        cover.as_deref(), &breadcrumb_href, &breadcrumb_label, &about,
     );
 
     let meta = render::PageMeta {
@@ -320,6 +361,7 @@ fn prepare_article(
 
     let article = render::Article {
         title: doc.frontmatter.title,
+        kind: kind.clone(),
         tags: doc.frontmatter.tags,
         body: body_html.clone(),
         published_at_display: published_at_display.clone(),
@@ -445,6 +487,40 @@ fn site_json_ld(site: &data::Site) -> String {
     to_script_json(&graph)
 }
 
+/// The /philosophy/ index as a schema.org CollectionPage whose `hasPart` lists
+/// every essay (each a BlogPosting authored by Mathew). This hands Google a
+/// named topical cluster - "the philosophy Mathew Storm wrote" - in one node.
+fn philosophy_collection_json_ld(site: &data::Site, essays: &[render::Post]) -> String {
+    if site.person.name.trim().is_empty() {
+        return String::new();
+    }
+    let person_id = format!("{}/#person", site.base_url);
+    let url = format!("{}/philosophy/", site.base_url);
+    let parts: Vec<serde_json::Value> = essays.iter().map(|p| {
+        serde_json::json!({
+            "@type": "BlogPosting",
+            "headline": p.title,
+            "url": format!("{}{}", site.base_url, p.url),
+            "datePublished": p.published_at,
+            "author": { "@id": person_id },
+        })
+    }).collect();
+    let collection = serde_json::json!({
+        "@type": "CollectionPage",
+        "@id": url,
+        "url": url,
+        "name": "Philosophy",
+        "isPartOf": { "@id": format!("{}/#website", site.base_url) },
+        "author": { "@id": person_id },
+        "hasPart": parts,
+    });
+    let graph = serde_json::json!({
+        "@context": "https://schema.org",
+        "@graph": [ collection, person_node(site, &person_id) ],
+    });
+    to_script_json(&graph)
+}
+
 /// The schema.org Person node, shared by the site graph and every article's
 /// author/publisher. `job_title` and `same_as` are included only when present.
 fn person_node(site: &data::Site, person_id: &str) -> serde_json::Value {
@@ -458,8 +534,36 @@ fn person_node(site: &data::Site, person_id: &str) -> serde_json::Value {
     if !site.person.job_title.trim().is_empty() {
         map.insert("jobTitle".into(), site.person.job_title.clone().into());
     }
+    // hasOccupation is the entity-level claim ("Philosopher") that Google reads
+    // for the Knowledge Graph - kept distinct from the visible jobTitle.
+    if let Some(occ) = &site.person.occupation {
+        if !occ.trim().is_empty() {
+            map.insert("hasOccupation".into(), serde_json::json!({
+                "@type": "Occupation",
+                "name": occ,
+            }));
+        }
+    }
+    // knowsAbout: every registered entity as a stated area of expertise. The
+    // sameAs link is what ties Mathew to entities Google already trusts.
+    if !site.entities.is_empty() {
+        let topics: Vec<serde_json::Value> = site.entities.iter().map(entity_node).collect();
+        map.insert("knowsAbout".into(), topics.into());
+    }
     if !site.person.same_as.is_empty() {
         map.insert("sameAs".into(), site.person.same_as.clone().into());
+    }
+    node
+}
+
+/// A schema.org Thing for one knowledge-graph entity, used in both the Person's
+/// `knowsAbout` and a post's `about`. `sameAs` is included only when present.
+fn entity_node(e: &data::Entity) -> serde_json::Value {
+    let mut node = serde_json::json!({ "@type": "Thing", "name": e.name });
+    if let Some(url) = &e.same_as {
+        if !url.trim().is_empty() {
+            node.as_object_mut().unwrap().insert("sameAs".into(), url.clone().into());
+        }
     }
     node
 }
@@ -477,6 +581,7 @@ fn article_json_ld(
     cover: Option<&str>,
     breadcrumb_href: &str,
     breadcrumb_label: &str,
+    about: &[data::Entity],
 ) -> String {
     if site.person.name.trim().is_empty() {
         return String::new();
@@ -500,6 +605,13 @@ fn article_json_ld(
             "image".into(),
             serde_json::Value::Array(vec![format!("{}{}", site.base_url, path).into()]),
         );
+    }
+    // `about`: the knowledge-graph entities this post covers (matched by tag).
+    // Being the marked-up author of work ABOUT Weil/Camus/etc. is the durable,
+    // co-citation signal Google weights above any self-applied label.
+    if !about.is_empty() {
+        let topics: Vec<serde_json::Value> = about.iter().map(entity_node).collect();
+        posting.as_object_mut().unwrap().insert("about".into(), topics.into());
     }
 
     // Breadcrumb: Home -> (section, e.g. "all issues") -> this post.

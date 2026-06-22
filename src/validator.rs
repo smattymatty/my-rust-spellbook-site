@@ -1,7 +1,7 @@
 use std::path::Path;
 use crate::content::Frontmatter;
 
-const ALLOWED_KINDS: &[&str] = &["post", "newsletter", "contribution", "dispatch", "tutorial"];
+const ALLOWED_KINDS: &[&str] = &["post", "newsletter", "contribution", "dispatch", "tutorial", "philosophy"];
 
 pub struct ValidationError {
     pub file: String,

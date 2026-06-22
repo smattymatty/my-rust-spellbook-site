@@ -9,6 +9,14 @@
     <span class="date">{{ published_at_display }}</span>
 </nav>
 
+{% if kind == "philosophy" %}
+<aside class="philo-disclaimer" role="note">
+    This writing is personal, not part of my engineering work. But the values I
+    work through here are the same ones that decide how I build, and what I
+    choose to build.
+</aside>
+{% endif %}
+
 <article class="post">
     {% if let Some(cover_src) = cover %}
     <figure class="post-cover">

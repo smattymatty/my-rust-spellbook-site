@@ -20,6 +20,7 @@
     --kind-contribution: #ff9966;  /* warm coral - handoff */
     --kind-dispatch:     #d97ee0;  /* magenta - signal flare */
     --kind-tutorial:     #4cc4c0;  /* teal - a guided path */
+    --kind-philosophy:   #b39ddb;  /* muted violet - the inward voice */
 
     /* Type */
     --font-serif:  "Iowan Old Style", "Charter", Georgia, serif;
@@ -27,7 +28,7 @@
     --font-mono:   "JetBrains Mono", "Fira Code", "SF Mono", Menlo, monospace;
     --text-base:   18px;
     --leading:     1.65;
-    --measure:      66ch;   /* reading column for articles */
+    --measure:      76ch;   /* reading column for articles (~15% wider than the old 66ch) */
     --measure-wide: 72rem;  /* layout container for chrome + index */
 
     /* Spacing scale */
@@ -358,7 +359,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--fg-muted);
-    margin: 0 0 var(--space-6);
+    margin: 0 auto var(--space-6);
     display: flex;
     gap: var(--space-3);
     align-items: baseline;
@@ -1258,6 +1259,42 @@ body {
     border-color: color-mix(in oklch, var(--kind-tutorial) 45%, transparent);
     background: color-mix(in oklch, var(--kind-tutorial) 10%, transparent);
 }
+
+.post-kind--philosophy {
+    color: var(--kind-philosophy);
+    border-color: color-mix(in oklch, var(--kind-philosophy) 45%, transparent);
+    background: color-mix(in oklch, var(--kind-philosophy) 10%, transparent);
+}
+
+/* ─── Philosophy section ────────────────────────────────
+   Personal writing, set apart by a violet voice and a standing disclaimer
+   that appears on both the /philosophy/ index and every philosophy essay.
+   ──────────────────────────────────────────────────── */
+
+.philo-page, .philo-disclaimer {
+    max-width: var(--measure, 70ch);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.philo-title {
+    margin: 0 0 var(--space-4);
+}
+
+.philo-disclaimer {
+    margin: var(--space-5) auto;
+    padding: var(--space-4);
+    font-style: italic;
+    color: var(--fg-muted);
+    line-height: 1.6;
+    background: color-mix(in oklch, var(--kind-philosophy) 7%, transparent);
+    border: 1px solid color-mix(in oklch, var(--kind-philosophy) 30%, transparent);
+    border-left: 3px solid var(--kind-philosophy);
+    border-radius: 2px;
+}
+
+.philo-essays { margin-top: var(--space-7); }
+.philo-essays-empty { color: var(--fg-muted); }
 
 /* ─── SpellBlocks ───────────────────────────────────────
    Django Spellbook's {~ name ~} blocks, rendered native (see src/spellblock.rs).

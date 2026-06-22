@@ -72,6 +72,22 @@ pub struct Site {
     pub og_image: String,    // path to the social-share image (e.g. "/og-image.png"); "" = none
     #[serde(default)]
     pub person: Person,      // identity for schema.org JSON-LD (Person / author / publisher)
+    #[serde(default)]
+    pub entities: Vec<Entity>, // knowledge-graph topics; feed Person.knowsAbout + per-post `about`
+}
+
+/// A knowledge-graph entity Mathew writes about (a person, a concept, a work).
+/// Drives two pieces of invisible schema.org structured data: the author's
+/// `knowsAbout` (every entity is a stated area of expertise) and each post's
+/// `about` (entities whose `tag` appears in that post's tags). `same_as` should
+/// be a stable Wikidata/Wikipedia URL so Google can resolve the entity; omit it
+/// for concepts with no clean canonical page.
+#[derive(Debug, Deserialize, Clone)]
+pub struct Entity {
+    pub tag: String,             // matches a post tag; links posts to this entity
+    pub name: String,            // display name, e.g. "Simone Weil"
+    #[serde(default)]
+    pub same_as: Option<String>, // canonical Wikidata/Wikipedia URL; None omits sameAs
 }
 
 /// The author identity emitted as schema.org JSON-LD. Drives Google's entity
@@ -82,7 +98,10 @@ pub struct Person {
     #[serde(default)]
     pub name: String,        // "Mathew Storm"
     #[serde(default)]
-    pub job_title: String,   // "Cloud Infrastructure Engineer ..."
+    pub job_title: String,   // "Cloud Infrastructure Engineer ..." - the VISIBLE title
+    #[serde(default)]
+    pub occupation: Option<String>, // schema.org hasOccupation, e.g. "Philosopher" -
+                                    // an entity claim that never appears in body copy
     #[serde(default)]
     pub same_as: Vec<String>, // canonical profile URLs (LinkedIn, GitHub, company)
 }

@@ -29,9 +29,46 @@ og_image = ""
 [person]
 name = "Mathew Storm"
 job_title = "Cloud Infrastructure Engineer & Founder, Storm Developments"
+# occupation - schema.org hasOccupation. An entity-level claim Google reads for
+# the Knowledge Graph; it never appears in visible page copy. The strongest
+# corroboration still lives off-site (a Wikidata item with occupation=philosopher,
+# a PhilPeople profile) - this markup makes you eligible, those make it stick.
+occupation = "Philosopher"
 same_as = [
     "https://www.linkedin.com/in/mathew-storm-70b671384/",
     "https://github.com/smattymatty",
     "https://socialontario.ca/@smattymatty",
     "https://stormdevelopments.ca",
 ]
+
+# [[entities]] - knowledge-graph topics Mathew writes about. One registry drives
+# two pieces of invisible schema.org structured data:
+#   - the Person's `knowsAbout` (every entity = a stated area of expertise)
+#   - each post's `about` (entities whose `tag` matches one of the post's tags)
+# `same_as` should be a stable Wikidata (preferred) or Wikipedia URL so Google
+# can resolve the entity. Omit `same_as` for concepts with no clean canonical page.
+# `tag` must match a tag you actually use in post frontmatter for `about` to attach.
+[[entities]]
+tag = "humanist-absurdism"
+name = "Absurdism"
+same_as = "https://en.wikipedia.org/wiki/Absurdism"
+
+[[entities]]
+tag = "simone-weil"
+name = "Simone Weil"
+same_as = "https://www.wikidata.org/wiki/Q231811"
+
+[[entities]]
+tag = "camus"
+name = "Albert Camus"
+same_as = "https://www.wikidata.org/wiki/Q34670"
+
+[[entities]]
+tag = "levinas"
+name = "Emmanuel Levinas"
+same_as = "https://en.wikipedia.org/wiki/Emmanuel_Levinas"
+
+[[entities]]
+tag = "philosophy"
+name = "Philosophy"
+same_as = "https://en.wikipedia.org/wiki/Philosophy"

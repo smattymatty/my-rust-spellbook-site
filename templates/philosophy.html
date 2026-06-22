@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Philosophy - mathewstorm.ca{% endblock %}
+
+{% block content %}
+<div class="philo-page">
+    <header class="philo-header">
+        <h1 class="philo-title">Philosophy Essays</h1>
+        <aside class="philo-disclaimer" role="note">
+            This writing is personal, not part of my engineering work. But the
+            values I work through here are the same ones that decide how I build,
+            and what I choose to build.
+        </aside>
+    </header>
+
+    <section class="philo-essays">
+        <h2 class="section-label">ESSAYS</h2>
+        {% if essays.is_empty() %}
+        <p class="philo-essays-empty">No essays published yet.</p>
+        {% else %}
+        <ul class="post-list">
+            {% for essay in essays %}
+            <li>
+                <a href="{{ essay.url }}">
+                    {% if let Some(thumb) = essay.cover %}
+                    <span class="post-thumb"><img src="{{ thumb }}" alt="" loading="lazy" decoding="async"></span>
+                    {% endif %}
+                    <div class="post-entry-main">
+                        <span class="post-kind post-kind--philosophy">PHILOSOPHY</span>
+                        <span class="title">{{ essay.title }}</span>
+                        {% if let Some(desc) = essay.description %}
+                        <span class="description">{{ desc }}</span>
+                        {% endif %}
+                        <div class="post-meta">
+                            <span class="post-date">{{ essay.published_at_display }}</span>
+                            <span class="post-meta-sep">&middot;</span>
+                            <span class="post-time">{{ essay.reading_time }}m</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
