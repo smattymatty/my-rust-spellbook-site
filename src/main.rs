@@ -391,10 +391,35 @@ fn prepare_article(
         featured,
         issue_display,
         cover,
-        body: body_html,
+        // The Atom <content> drops the on-page permalink anchors: a feed reader
+        // has no hover CSS to hide them, so the bare "#" would show after every
+        // heading.
+        body: strip_heading_anchors(&body_html),
     };
 
     Ok(Prepared { content_path: content_path.to_path_buf(), article, post })
+}
+
+/// Unwrap the injected `<a class="heading-link" …>text</a>` permalinks back to
+/// plain heading text. Used for the Atom feed, where the on-page hover styling
+/// is absent and a clickable heading just looks odd. The opening tag is dropped
+/// wherever it appears; the matching close always sits directly before the
+/// heading's own close tag, since the link wraps exactly the heading text.
+fn strip_heading_anchors(html: &str) -> String {
+    let mut out = String::with_capacity(html.len());
+    let mut rest = html;
+    while let Some(start) = rest.find("<a class=\"heading-link\"") {
+        out.push_str(&rest[..start]);
+        match rest[start..].find('>') {
+            Some(gt) => rest = &rest[start + gt + 1..],
+            None => { rest = ""; break; }
+        }
+    }
+    out.push_str(rest);
+
+    ["h1", "h2", "h3", "h4", "h5", "h6"].iter().fold(out, |acc, tag| {
+        acc.replace(&format!("</a></{tag}>"), &format!("</{tag}>"))
+    })
 }
 
 /// Up to three sibling posts sharing the most tags with `post`, most-shared

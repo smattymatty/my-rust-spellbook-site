@@ -10,14 +10,18 @@
 use std::collections::HashMap;
 
 use anyhow::{anyhow, bail, Result};
-use pulldown_cmark::{html, Parser};
+use pulldown_cmark::{html, CowStr, Event, Parser, Tag, TagEnd};
 
 /// Render a markdown document - expanding SpellBlocks - into an HTML string.
 pub fn render(markdown: &str) -> Result<String> {
     let mut out = String::new();
+    // Tracks heading slugs across the whole document so duplicate titles get
+    // suffixed ids (-2, -3) rather than colliding. Only top-level body headings
+    // are anchored; headings inside SpellBlocks render plain.
+    let mut seen = HashMap::new();
     for segment in split(markdown)? {
         match segment {
-            Segment::Markdown(md) => out.push_str(&markdown_to_html(&md)),
+            Segment::Markdown(md) => out.push_str(&markdown_to_html_anchored(&md, &mut seen)),
             Segment::Block { name, attrs, inner } => {
                 out.push_str(&render_block(&name, &attrs, &inner)?);
             }
@@ -167,6 +171,106 @@ fn markdown_to_html(md: &str) -> String {
     out
 }
 
+/// Like [`markdown_to_html`] but stamps every heading with a slug `id` and
+/// splices a permalink anchor (`<a class="heading-anchor" href="#slug">#</a>`)
+/// in just before the closing tag, so sections are linkable. Used for the
+/// article body only; `seen` de-duplicates slugs across the document.
+fn markdown_to_html_anchored(md: &str, seen: &mut HashMap<String, usize>) -> String {
+    let mut events: Vec<Event> = Parser::new(md).collect();
+
+    let mut i = 0;
+    while i < events.len() {
+        // Pull the heading's parts out by value so the borrow ends before we
+        // mutate the vector below.
+        let head = match &events[i] {
+            Event::Start(Tag::Heading { level, classes, attrs, .. }) => {
+                Some((*level, classes.clone(), attrs.clone()))
+            }
+            _ => None,
+        };
+        let Some((level, classes, attrs)) = head else {
+            i += 1;
+            continue;
+        };
+
+        // Walk to the matching close, collecting visible text for the slug.
+        let mut text = String::new();
+        let mut end = i + 1;
+        while end < events.len() {
+            match &events[end] {
+                Event::Text(t) | Event::Code(t) => text.push_str(t),
+                Event::End(TagEnd::Heading(_)) => break,
+                _ => {}
+            }
+            end += 1;
+        }
+
+        let slug = unique_slug(&slugify(&text), seen);
+
+        // Mark the heading so CSS targets only article-body headings, never the
+        // template's own (e.g. the "Related" title).
+        let mut classes = classes;
+        classes.push(CowStr::from("anchored"));
+        events[i] = Event::Start(Tag::Heading {
+            level,
+            id: Some(CowStr::from(slug.clone())),
+            classes,
+            attrs,
+        });
+
+        // Wrap the heading's whole text in a permalink link, so clicking
+        // anywhere on the heading jumps to it. The "#" marker is drawn by CSS.
+        events.insert(
+            i + 1,
+            Event::Html(CowStr::from(format!("<a class=\"heading-link\" href=\"#{slug}\">"))),
+        );
+        // The opening insert shifted the closing heading tag one slot right.
+        events.insert(end + 1, Event::Html(CowStr::from("</a>")));
+
+        // Resume past: start, open-link, …text…, close-link, end.
+        i = end + 3;
+    }
+
+    let mut out = String::new();
+    html::push_html(&mut out, events.into_iter());
+    out
+}
+
+/// Turn heading text into a URL-safe slug: lowercase, alphanumerics kept,
+/// runs of everything else collapsed to single dashes, no leading/trailing
+/// dash. Empty results fall back to "section".
+fn slugify(text: &str) -> String {
+    let mut slug = String::new();
+    let mut pending_dash = false;
+    for c in text.chars() {
+        if c.is_ascii_alphanumeric() {
+            if pending_dash && !slug.is_empty() {
+                slug.push('-');
+            }
+            pending_dash = false;
+            slug.push(c.to_ascii_lowercase());
+        } else {
+            pending_dash = true;
+        }
+    }
+    if slug.is_empty() {
+        slug.push_str("section");
+    }
+    slug
+}
+
+/// Disambiguate a slug against ones already used in the document, appending
+/// `-2`, `-3`, … on collision.
+fn unique_slug(base: &str, seen: &mut HashMap<String, usize>) -> String {
+    let count = seen.entry(base.to_string()).or_insert(0);
+    *count += 1;
+    if *count == 1 {
+        base.to_string()
+    } else {
+        format!("{base}-{count}")
+    }
+}
+
 /// Dispatch a parsed block to its renderer. An unknown name fails the build.
 fn render_block(name: &str, attrs: &HashMap<String, String>, inner: &str) -> Result<String> {
     let inner_html = markdown_to_html(inner);
@@ -264,8 +368,24 @@ mod tests {
     #[test]
     fn plain_markdown_passes_through() {
         let out = render("# Title\n\nbody text").unwrap();
-        assert!(out.contains("<h1>Title</h1>"));
+        // Headings are now slugged and their text wrapped in a permalink link.
+        assert!(out.contains("<h1 id=\"title\" class=\"anchored\">"));
+        assert!(out.contains("<a class=\"heading-link\" href=\"#title\">Title</a>"));
         assert!(out.contains("<p>body text</p>"));
+    }
+
+    #[test]
+    fn duplicate_heading_titles_get_unique_slugs() {
+        let out = render("## Setup\n\ntext\n\n## Setup\n\nmore").unwrap();
+        assert!(out.contains("id=\"setup\""));
+        assert!(out.contains("id=\"setup-2\""));
+    }
+
+    #[test]
+    fn slugify_collapses_punctuation_and_spaces() {
+        assert_eq!(slugify("Where the Workflows Go"), "where-the-workflows-go");
+        assert_eq!(slugify("What a Tag *Actually* Promises!"), "what-a-tag-actually-promises");
+        assert_eq!(slugify("  ---  "), "section");
     }
 
     #[test]

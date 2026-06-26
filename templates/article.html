@@ -24,13 +24,9 @@
     </figure>
     {% endif %}
 
-    <h1>{{ title }}</h1>
+    <h1 class="anchored"><a class="heading-link" href="{{ meta.canonical_url }}">{{ title }}</a></h1>
 
     <dl class="meta-strip">
-        <div class="meta-col">
-            <dt>BY</dt>
-            <dd>Mathew Storm</dd>
-        </div>
         <div class="meta-col">
             <dt>PUBLISHED</dt>
             <dd>{{ published_at_display }}</dd>

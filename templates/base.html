@@ -27,7 +27,10 @@
 <body id="top"{% if !meta.body_class.is_empty() %} class="{{ meta.body_class }}"{% endif %}>
     <header class="site-header">
         <a class="brand" href="/"><img class="brand-mark" src="/media/images/favicon.svg" alt="" aria-hidden="true">mathewstorm.ca</a>
-        <nav class="site-nav">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+            <span class="nav-toggle-glyph" aria-hidden="true"></span><span class="nav-toggle-text" aria-hidden="true"></span>
+        </button>
+        <nav class="site-nav" id="site-nav">
             <a href="/">Writing</a>
             <a href="/newsletter/">Newsletter</a>
             <a href="/philosophy/">Philosophy</a>
@@ -41,10 +44,14 @@
             <span class="footer-brand"><img class="brand-mark" src="/media/images/favicon.svg" alt="" aria-hidden="true">mathewstorm.ca</span>
             <span class="footer-status"><span class="status-dot"></span>ONLINE &middot; ONTARIO &middot; 2026</span>
         </div>
-        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="https://stormdevelopments.ca/buckets">Storm Buckets</a> &middot; <a href="#top">&uarr; back to top</a></p>
+        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="https://stormdevelopments.ca/sites">Storm Buckets</a> &middot; <a href="#top">&uarr; back to top</a></p>
     </footer>
+    <script src="/assets/js/nav-toggle.js" defer></script>
+    <script src="/assets/js/heading-anchor.js" defer></script>
     <script src="/assets/js/quotes.js" defer></script>
     <script src="/assets/js/copy-button.js" defer></script>
     <script src="/assets/js/tag-collapse.js" defer></script>
 </body>
 </html>
+
+        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="
