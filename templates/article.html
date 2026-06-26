@@ -3,6 +3,8 @@
 {% block title %}{{ title }} - mathewstorm.ca{% endblock %}
 
 {% block content %}
+<div class="article-shell{% if toc.len() >= 3 %} has-toc{% endif %}">
+<div class="article-main">
 <nav class="breadcrumb">
     <a class="crumb-link" href="{{ breadcrumb_href }}">&larr; {{ breadcrumb_label }}</a>
     <span class="sep">&middot;</span>
@@ -92,4 +94,16 @@
 <nav class="post-foot">
     <a href="/">[ &uarr; all writing ]</a>
 </nav>
+</div>
+
+{% if toc.len() >= 3 %}
+<nav class="toc" aria-label="On this page">
+    <a class="toc-doc-title" href="#top">{{ title }}</a>
+    <p class="toc-title">On this page</p>
+    {% for h in toc %}
+    <a class="toc-link toc-l{{ h.level }}" href="#{{ h.slug }}">{{ h.text }}</a>
+    {% endfor %}
+</nav>
+{% endif %}
+</div>
 {% endblock %}

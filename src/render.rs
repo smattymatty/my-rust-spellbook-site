@@ -69,6 +69,7 @@ pub struct Article {
     pub cover: Option<String>,               // site-root path; Some -> render a hero <figure>
     pub cover_alt: String,                   // alt text for the hero image
     pub related: Vec<RelatedPost>,           // sibling posts by shared tags; empty -> no block
+    pub toc: Vec<crate::spellblock::TocHeading>, // section headings; >=3 -> render the on-page TOC
 }
 
 /// A sibling post surfaced in the "Related" block at the foot of an article,

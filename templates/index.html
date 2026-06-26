@@ -56,7 +56,7 @@
             <h2 class="section-label">FEATURED</h2>
             <ul class="post-list featured-list">
                 {% for post in featured_posts %}
-                <li class="featured-card">
+                <li class="featured-card post-card--{{ post.kind }}">
                     <a href="{{ post.url }}">
                         {% if let Some(thumb) = post.cover %}
                         <span class="featured-thumb"><img src="{{ thumb }}" alt="" loading="lazy" decoding="async"></span>
@@ -88,7 +88,7 @@
             <h2 class="section-label">RECENT WRITING</h2>
             <ul class="post-list">
                 {% for post in posts %}
-                <li>
+                <li class="post-card--{{ post.kind }}">
                     <a href="{{ post.url }}">
                         {% if let Some(thumb) = post.cover %}
                         <span class="post-thumb"><img src="{{ thumb }}" alt="" loading="lazy" decoding="async"></span>

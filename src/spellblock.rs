@@ -10,24 +10,42 @@
 use std::collections::HashMap;
 
 use anyhow::{anyhow, bail, Result};
-use pulldown_cmark::{html, CowStr, Event, Parser, Tag, TagEnd};
+use pulldown_cmark::{html, CowStr, Event, HeadingLevel, Parser, Tag, TagEnd};
 
-/// Render a markdown document - expanding SpellBlocks - into an HTML string.
-pub fn render(markdown: &str) -> Result<String> {
+/// One section heading surfaced for an on-this-page table of contents.
+pub struct TocHeading {
+    pub level: u8,     // 2 or 3
+    pub text: String,  // plain heading text
+    pub slug: String,  // matches the heading's id / `#fragment`
+}
+
+/// The product of rendering a document: the HTML body plus the h2/h3 headings
+/// (in document order) for building a TOC.
+pub struct Rendered {
+    pub html: String,
+    pub headings: Vec<TocHeading>,
+}
+
+/// Render a markdown document - expanding SpellBlocks - into HTML, also
+/// collecting its section headings for the TOC.
+pub fn render(markdown: &str) -> Result<Rendered> {
     let mut out = String::new();
     // Tracks heading slugs across the whole document so duplicate titles get
     // suffixed ids (-2, -3) rather than colliding. Only top-level body headings
     // are anchored; headings inside SpellBlocks render plain.
     let mut seen = HashMap::new();
+    let mut headings = Vec::new();
     for segment in split(markdown)? {
         match segment {
-            Segment::Markdown(md) => out.push_str(&markdown_to_html_anchored(&md, &mut seen)),
+            Segment::Markdown(md) => {
+                out.push_str(&markdown_to_html_anchored(&md, &mut seen, &mut headings))
+            }
             Segment::Block { name, attrs, inner } => {
                 out.push_str(&render_block(&name, &attrs, &inner)?);
             }
         }
     }
-    Ok(out)
+    Ok(Rendered { html: out, headings })
 }
 
 enum Segment {
@@ -171,11 +189,14 @@ fn markdown_to_html(md: &str) -> String {
     out
 }
 
-/// Like [`markdown_to_html`] but stamps every heading with a slug `id` and
-/// splices a permalink anchor (`<a class="heading-anchor" href="#slug">#</a>`)
-/// in just before the closing tag, so sections are linkable. Used for the
-/// article body only; `seen` de-duplicates slugs across the document.
-fn markdown_to_html_anchored(md: &str, seen: &mut HashMap<String, usize>) -> String {
+/// Like [`markdown_to_html`] but stamps every heading with a slug `id`, wraps
+/// its text in a permalink link, and records h2/h3 headings into `toc`. Used
+/// for the article body only; `seen` de-duplicates slugs across the document.
+fn markdown_to_html_anchored(
+    md: &str,
+    seen: &mut HashMap<String, usize>,
+    toc: &mut Vec<TocHeading>,
+) -> String {
     let mut events: Vec<Event> = Parser::new(md).collect();
 
     let mut i = 0;
@@ -206,6 +227,23 @@ fn markdown_to_html_anchored(md: &str, seen: &mut HashMap<String, usize>) -> Str
         }
 
         let slug = unique_slug(&slugify(&text), seen);
+
+        // Record section headings for the on-this-page TOC (h2/h3 only).
+        let level_num = match level {
+            HeadingLevel::H1 => 1,
+            HeadingLevel::H2 => 2,
+            HeadingLevel::H3 => 3,
+            HeadingLevel::H4 => 4,
+            HeadingLevel::H5 => 5,
+            HeadingLevel::H6 => 6,
+        };
+        if (2..=3).contains(&level_num) {
+            toc.push(TocHeading {
+                level: level_num,
+                text: text.trim().to_string(),
+                slug: slug.clone(),
+            });
+        }
 
         // Mark the heading so CSS targets only article-body headings, never the
         // template's own (e.g. the "Related" title).
@@ -367,7 +405,7 @@ mod tests {
 
     #[test]
     fn plain_markdown_passes_through() {
-        let out = render("# Title\n\nbody text").unwrap();
+        let out = render("# Title\n\nbody text").unwrap().html;
         // Headings are now slugged and their text wrapped in a permalink link.
         assert!(out.contains("<h1 id=\"title\" class=\"anchored\">"));
         assert!(out.contains("<a class=\"heading-link\" href=\"#title\">Title</a>"));
@@ -376,7 +414,7 @@ mod tests {
 
     #[test]
     fn duplicate_heading_titles_get_unique_slugs() {
-        let out = render("## Setup\n\ntext\n\n## Setup\n\nmore").unwrap();
+        let out = render("## Setup\n\ntext\n\n## Setup\n\nmore").unwrap().html;
         assert!(out.contains("id=\"setup\""));
         assert!(out.contains("id=\"setup-2\""));
     }
@@ -389,8 +427,19 @@ mod tests {
     }
 
     #[test]
+    fn toc_collects_h2_h3_only_in_order() {
+        let rendered = render("# Title\n\n## Alpha\n\ntext\n\n### Beta\n\n#### Skip\n\n## Gamma").unwrap();
+        let toc: Vec<_> = rendered.headings.iter().map(|h| (h.level, h.text.as_str(), h.slug.as_str())).collect();
+        assert_eq!(toc, vec![
+            (2, "Alpha", "alpha"),
+            (3, "Beta", "beta"),
+            (2, "Gamma", "gamma"),
+        ]);
+    }
+
+    #[test]
     fn alert_renders_type_icon_and_inner_markdown() {
-        let out = render("{~ alert type=\"warning\" ~}\n**heed**\n{~~}").unwrap();
+        let out = render("{~ alert type=\"warning\" ~}\n**heed**\n{~~}").unwrap().html;
         assert!(out.contains("spell-callout--warning"));
         assert!(out.contains("⚠️"));
         assert!(out.contains("<strong>heed</strong>"));
@@ -398,7 +447,7 @@ mod tests {
 
     #[test]
     fn card_carries_title_and_footer() {
-        let out = render("{~ card title=\"T\" footer=\"F\" ~}\nbody\n{~~}").unwrap();
+        let out = render("{~ card title=\"T\" footer=\"F\" ~}\nbody\n{~~}").unwrap().html;
         assert!(out.contains("spell-card-head\">T</header>"));
         assert!(out.contains("spell-card-foot\">F</footer>"));
         assert!(out.contains("<p>body</p>"));
@@ -406,14 +455,14 @@ mod tests {
 
     #[test]
     fn accordion_is_a_native_details_element() {
-        let out = render("{~ accordion title=\"More\" ~}\nhidden\n{~~}").unwrap();
+        let out = render("{~ accordion title=\"More\" ~}\nhidden\n{~~}").unwrap().html;
         assert!(out.contains("<details class=\"spell-accordion\">"));
         assert!(out.contains("spell-accordion-summary\">More</summary>"));
     }
 
     #[test]
     fn label_seperator_renders_its_label() {
-        let out = render("{~ label_seperator color=\"primary\" ~}\n**Step 1**\n{~~}").unwrap();
+        let out = render("{~ label_seperator color=\"primary\" ~}\n**Step 1**\n{~~}").unwrap().html;
         assert!(out.contains("spell-step--primary"));
         assert!(out.contains("<strong>Step 1</strong>"));
     }
@@ -427,7 +476,7 @@ mod tests {
 
     #[test]
     fn surrounding_markdown_and_block_both_render() {
-        let out = render("before\n\n{~ alert ~}\nin\n{~~}\n\nafter").unwrap();
+        let out = render("before\n\n{~ alert ~}\nin\n{~~}\n\nafter").unwrap().html;
         assert!(out.contains("<p>before</p>"));
         assert!(out.contains("spell-callout"));
         assert!(out.contains("<p>after</p>"));

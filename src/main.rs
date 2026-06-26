@@ -290,8 +290,10 @@ fn prepare_article(
     content_root: &Path,
     site: &data::Site,
 ) -> Result<Prepared> {
-    let body_html = spellblock::render(&doc.body)
+    let rendered = spellblock::render(&doc.body)
         .context("expanding SpellBlocks")?;
+    let body_html = rendered.html;
+    let toc = rendered.headings;
 
     let title = doc.frontmatter.title.clone();
     let description = doc.frontmatter.description.clone();
@@ -310,8 +312,13 @@ fn prepare_article(
 
     // A newsletter issue wears the "Own Your Stack" identity: the .oys body
     // scope, the masthead, an issue number, and a breadcrumb back to the
-    // newsletter home. Every other post keeps the plain article treatment.
-    let body_class = if is_newsletter { "oys".to_string() } else { String::new() };
+    // newsletter home. Philosophy essays take the .philo scope (violet accent);
+    // every other post keeps the plain gold treatment.
+    let body_class = match kind.as_str() {
+        "newsletter" => "oys".to_string(),
+        "philosophy" => "philo".to_string(),
+        _ => String::new(),
+    };
     let (breadcrumb_href, breadcrumb_label) = match kind.as_str() {
         "newsletter" => ("/newsletter/".to_string(), "all issues".to_string()),
         "philosophy" => ("/philosophy/".to_string(), "all essays".to_string()),
@@ -375,6 +382,7 @@ fn prepare_article(
         cover: cover.clone(),
         cover_alt,
         related: Vec::new(), // filled in a later pass, once all posts are known
+        toc,
     };
 
     let post = render::Post {

@@ -33,7 +33,9 @@ These are diagnoses. Humanist Absurdism is the response.
 
 It begins in the narrow space between quitting (impossible) and full compliance (unbearable) - the small mercies of people who see a face and refuse to process it as a number. But the modern economy hides faces by design. Supply chains, algorithms, and scale itself ensure you never encounter the people your systems grind down. Your brain, built for village-scale ethics, cannot feel suffering at global scale. The system exploits this.
 
-Individual mercy keeps people alive today. It does not change what kills them tomorrow. The sustainable practice is to organize - distributing the weight of infinite responsibility across finite people - and to educate, making visible what the system has hidden.
+'''''''''''''''''''''''''''IMPORTNAT LOAD BEARING ```````````````````````Individual mercy keeps people alive today. It does not change what kills them tomorrow.'''''''''''''''''''''''' ```````````````````````````````````````````
+
+The sustainable practice is to organize - distributing the weight of infinite responsibility across finite people - and to educate, making visible what the system has hidden.
 {~~}
 
 **Terminology:**
@@ -171,7 +173,10 @@ Your brain can process roughly 150 faces. The gap between infinite obligation an
 
 You cannot be responsible for everyone. Not because Levinas is wrong - the obligation is real - but because the systems grinding people down have been doing it for centuries. Nobody alive built them. Nobody alive knows where they began. The cruelty is older than any single person's capacity to undo it, and the fantasy that you alone can carry the weight of infinite responsibility is itself a kind of gravity - it pulls you down and removes you from the work.
 
-The individual mercies matter. They saved me. But they cannot be the strategy. The caseworker who reads generously will retire or burn out. The teacher who writes 62 will leave the profession. The nurse who marks the wrong code will eventually stop. Individual mercy within the system is necessary and insufficient. It keeps people alive today. It does not change what kills them tomorrow.
+The individual mercies matter. They saved me. But they cannot be the strategy. The caseworker who reads generously will retire or burn out. The teacher who writes 62 will leave the profession. The nurse who marks the wrong code will eventually stop. 
+
+``````````IMPORTANT LOAD BEARING`````````````Individual mercy within the system is necessary and insufficient.````````````````````````````
+ It keeps people alive today. It does not change what kills them tomorrow. -- (oh wow, we saythis twice, eh?)
 
 {~ accordion title="Levinas on Asymmetry" ~}
 Levinas insisted ethics isn't reciprocal. "What I permit myself to demand of myself is not comparable to what I have the right to demand of the Other." You hold yourself to a standard you don't impose on others.

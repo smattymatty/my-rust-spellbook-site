@@ -178,6 +178,7 @@ body {
 /* ─── Brand + nav (Storm DNA: mono uppercase) ──────── */
 
 .brand {
+    position: relative;
     font-family: var(--font-mono);
     color: var(--fg);
     text-decoration: none;
@@ -189,7 +190,25 @@ body {
     transition: color 150ms;
 }
 
+/* On hover the wordmark takes the diamond's colour (--accent, #c9a96e). */
 .brand:hover { color: var(--accent); }
+
+/* Animated underline on hover, matching the heading/nav treatment. The text
+   stays white; only the accent underline wipes in from the left. */
+.brand::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.2em;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 200ms ease;
+}
+
+.brand:hover::after { transform: scaleX(1); }
 
 .brand-mark {
     width: 0.95em;
@@ -389,19 +408,111 @@ body {
     transform: translateX(0);
 }
 
-/* The page <h1> title keeps its full-strength colour; it tints only on hover,
-   so the hierarchy (cream title, accent section headings) stays intact. Its
-   link copies the whole page URL rather than a fragment. */
+/* The page <h1> title stays white by default and only tints to accent on
+   hover; the accent-by-default treatment is for section headings (h2/h3). */
 .post h1.anchored .heading-link { color: inherit; }
 .post h1.anchored .heading-link:hover,
 .post h1.anchored .heading-link:focus-visible { color: var(--accent); }
 
+
 @media (prefers-reduced-motion: reduce) {
     .heading-link::before,
-    .heading-link::after { transition: none; }
+    .heading-link::after,
+    .brand::after { transition: none; }
 }
 
+/* Prose body text sits ~10% more transparent than --fg (#e8e4dc) for a softer
+   read; headings, links, and code keep their own full-strength colours. */
+.post-body { color: rgba(232, 228, 220, 0.9); }
+
 .post p { margin: 0 0 var(--space-5); }
+
+/* ─── On-this-page TOC (scroll-spy) ─────────────────────
+   A sticky right-rail of section links, shown only on wide screens and only
+   when the post has enough sections (.has-toc, set in the template). The active
+   link — set by toc-scrollspy.js as you scroll — lights in --accent with a
+   phosphor tick on the rail (phosphor is structural-only; a rail marker is its
+   sanctioned use). Below the breakpoint the rail is hidden and the layout falls
+   back to the normal centred column. */
+.toc { display: none; }
+
+@media (min-width: 1200px) {
+    .article-shell.has-toc {
+        display: grid;
+        grid-template-columns: 1fr var(--measure) 1fr;
+        column-gap: var(--space-6);
+        align-items: start;
+    }
+    .article-shell.has-toc .article-main { grid-column: 2; min-width: 0; }
+
+    .article-shell.has-toc .toc {
+        display: block;
+        grid-column: 3;
+        position: sticky;
+        top: var(--space-7);
+        align-self: start;
+        max-height: calc(100vh - var(--space-9));
+        overflow-y: auto;
+        border-left: 1px solid var(--border-rule);
+    }
+}
+
+/* The article title sits atop the rail; clicking it returns to the top. */
+.toc-doc-title {
+    display: block;
+    margin: 0 0 var(--space-4);
+    padding: 0 0 var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-rule);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color 150ms;
+}
+
+.toc-doc-title:hover { color: var(--accent); }
+
+.toc-title {
+    margin: 0 0 var(--space-2);
+    padding-left: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+}
+
+.toc-link {
+    display: block;
+    margin-left: -1px;                  /* sit the tick over the rail hairline */
+    padding: 0.35rem 0 0.35rem var(--space-4);
+    border-left: 2px solid transparent;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+    color: var(--fg-muted);
+    text-decoration: none;
+    transition: color 150ms, border-color 150ms;
+}
+
+.toc-l3 {
+    padding-left: var(--space-6);       /* indent sub-sections */
+    font-size: 0.68rem;
+}
+
+.toc-link:hover { color: var(--accent); }
+
+.toc-link.active {
+    color: var(--accent);
+    border-left-color: var(--phosphor);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toc-link { transition: none; }
+}
 
 .post a {
     color: var(--accent);
@@ -1248,6 +1359,12 @@ body {
 
 .post-list a:hover .title { color: var(--accent); }
 
+/* Per-card accent: a newsletter card hovers blue and a philosophy card violet,
+   matching their section scopes. Overriding --accent retints the hover border,
+   the title, and (for the featured card) its left border in one move. */
+.post-card--newsletter { --accent: var(--kind-newsletter); }
+.post-card--philosophy { --accent: var(--kind-philosophy); }
+
 /* Mini thumbnail in RECENT WRITING only - a small cover beside the text, not
    the full banner the featured card and newsletter index use. */
 .writing .post-list a {
@@ -1652,6 +1769,13 @@ body {
 .oys {
     --accent:     var(--kind-newsletter);  /* broadcast blue replaces gold, page-wide */
     --accent-dim: #2c4a66;                 /* dimmed blue - selection highlight */
+}
+
+/* Philosophy scope: the inward voice swaps gold for muted violet, page-wide,
+   the same way .oys swaps for blue. */
+.philo {
+    --accent:     var(--kind-philosophy);  /* muted violet replaces gold */
+    --accent-dim: #4a3d63;                 /* dimmed violet - selection highlight */
 }
 
 /* The masthead bar: the "OWN YOUR STACK" identity block that opens the
