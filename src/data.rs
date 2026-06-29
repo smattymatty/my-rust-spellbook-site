@@ -112,11 +112,54 @@ pub struct Newsletter {
     pub tagline: String,     // masthead tagline
 }
 
+/// A project shown on /projects/. The first entry marked `featured` gets the
+/// hero treatment - the big card with the rotating image carousel; the rest
+/// render as a compact grid below it.
+#[derive(Debug, Deserialize)]
+pub struct Project {
+    pub name: String,
+    pub tagline: String,             // one-line pitch under the name
+    pub description: String,         // a sentence or two of context
+    #[serde(default)]
+    pub url: Option<String>,         // primary "visit" link; None = no button
+    #[serde(default)]
+    pub status: Option<String>,      // badge text, e.g. "LIVE", "BETA" - uppercased in copy already
+    #[serde(default)]
+    pub featured: bool,              // the hero project (the carousel one)
+    #[serde(default)]
+    pub tech: Vec<String>,           // stack chips, e.g. ["Garage", "S3 API"]
+    #[serde(default)]
+    pub links: Vec<ProjectLink>,     // extra links (docs, repo, pricing)
+    #[serde(default)]
+    pub images: Vec<ProjectImage>,   // explicit carousel slides (custom alt text)
+    #[serde(default)]
+    pub image_dir: Option<String>,   // site-root folder whose image files are
+                                     // folded in as slides automatically (sorted
+                                     // by filename, after `images`) - the "just
+                                     // drop a screenshot in and rebuild" path
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProjectLink {
+    pub label: String,
+    pub href: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProjectImage {
+    pub src: String,   // site-root path, e.g. "/media/images/projects/buckets-01.png"
+    #[serde(default)]
+    pub alt: String,
+}
+
 #[derive(Deserialize)]
 struct ConnectFile { links: Vec<ConnectLink> }
 
 #[derive(Deserialize)]
 struct ForgesFile { entry: Vec<ForgeEntry> }
+
+#[derive(Deserialize)]
+struct ProjectsFile { project: Vec<Project> }
 
 fn load_toml<T: serde::de::DeserializeOwned>(path: &Path) -> Result<T> {
     let raw = fs::read_to_string(path)
@@ -145,4 +188,9 @@ pub fn load_site(path: &Path) -> Result<Site> {
 
 pub fn load_newsletter(path: &Path) -> Result<Newsletter> {
     load_toml(path)
+}
+
+pub fn load_projects(path: &Path) -> Result<Vec<Project>> {
+    let file: ProjectsFile = load_toml(path)?;
+    Ok(file.project)
 }

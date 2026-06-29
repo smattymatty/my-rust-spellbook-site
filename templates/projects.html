@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - mathewstorm.ca{% endblock %}
+
+{% block content %}
+<header class="projects-head">
+    <h1 class="projects-title">Projects</h1>
+    <p class="projects-intro">Open infrastructure I build in Canada. The flagship is Storm Buckets; everything else is the same bet, smaller.</p>
+</header>
+
+{% if let Some(p) = featured %}
+<section class="project-hero{% if p.images.is_empty() %} project-hero--solo{% endif %}" aria-label="{{ p.name }}">
+    {% if !p.images.is_empty() %}
+    <div class="project-hero-media">
+        <div class="carousel" data-carousel>
+            <ul class="carousel-track">
+                {% for img in p.images %}
+                <li class="carousel-slide"><img src="{{ img.src }}" alt="{{ img.alt }}" loading="lazy" decoding="async"></li>
+                {% endfor %}
+            </ul>
+            {% if p.images.len() > 1 %}
+            <div class="carousel-controls">
+                <button class="carousel-prev" type="button" aria-label="previous image">&larr;</button>
+                <div class="carousel-dots">
+                    {% for img in p.images %}<button class="carousel-dot" type="button" aria-label="image {{ loop.index }}"></button>{% endfor %}
+                </div>
+                <button class="carousel-next" type="button" aria-label="next image">&rarr;</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    <div class="project-hero-body">
+        {% if let Some(status) = p.status %}<span class="project-status">{{ status }}</span>{% endif %}
+        <h2 class="project-name">{{ p.name }}</h2>
+        <p class="project-tagline">{{ p.tagline }}</p>
+        <p class="project-desc">{{ p.description }}</p>
+        {% if !p.tech.is_empty() %}
+        <ul class="project-tech">
+            {% for t in p.tech %}<li>{{ t }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        <div class="project-actions">
+            {% if let Some(url) = p.url %}<a class="project-cta" href="{{ url }}">Visit {{ p.name }} &rarr;</a>{% endif %}
+            {% for link in p.links %}<a class="project-link" href="{{ link.href }}">{{ link.label }}</a>{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if !others.is_empty() %}
+<section class="project-more">
+    <h2 class="section-label">MORE</h2>
+    <ul class="project-grid">
+        {% for p in others %}
+        <li class="project-card">
+            {% if let Some(status) = p.status %}<span class="project-status">{{ status }}</span>{% endif %}
+            <h3 class="project-card-name">{{ p.name }}</h3>
+            <p class="project-card-tagline">{{ p.tagline }}</p>
+            <p class="project-card-desc">{{ p.description }}</p>
+            {% if !p.tech.is_empty() %}
+            <ul class="project-tech">
+                {% for t in p.tech %}<li>{{ t }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+            <div class="project-actions">
+                {% if let Some(url) = p.url %}<a class="project-cta" href="{{ url }}">Visit &rarr;</a>{% endif %}
+                {% for link in p.links %}<a class="project-link" href="{{ link.href }}">{{ link.label }}</a>{% endfor %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+{% endblock %}

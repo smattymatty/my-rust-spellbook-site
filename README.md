@@ -46,11 +46,11 @@ kind: newsletter                           # post | newsletter | contribution | 
 tags: [infrastructure, open-source]        # required, at least one
 description: "One-line summary for SEO + social cards."
 quote: A pull-quote that feeds the index rotation.   # optional
-featured: true                             # optional — at most ONE post site-wide
-cover: /media/images/newsletter/foo.png    # optional — hero image + social card
+featured: true                             # optional - at most ONE post site-wide
+cover: /media/images/newsletter/foo.png    # optional - hero image + social card
 cover_alt: "Describe the cover for a11y + SEO."
 issue: 1                                    # required when kind: newsletter
-draft: true                                # optional — excludes from the build
+draft: true                                # optional - excludes from the build
 ---
 ```
 

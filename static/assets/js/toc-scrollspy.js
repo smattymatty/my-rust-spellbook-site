@@ -1,5 +1,5 @@
 // Scroll-spy for the on-this-page TOC: highlights the link for the section
-// currently in view. Pure enhancement — without it the links are still plain
+// currently in view. Pure enhancement - without it the links are still plain
 // jump anchors. The "active band" is the top quarter of the viewport; the
 // topmost heading inside it wins, and when none is inside (mid-section or at
 // the very bottom) the last active link stays lit.

@@ -1,0 +1,74 @@
+# PROJECTS - the public showcase at /projects/. The FIRST entry with
+# `featured = true` becomes the hero (the big card with the image carousel);
+# every other [[project]] falls into the grid below, in file order.
+#
+# Per-project fields:
+#   name        - project name (required)
+#   tagline     - one-line pitch (required)
+#   description - a sentence or two of context (required)
+#   url         - primary "visit" link (optional; omit for no button)
+#   status      - small badge, e.g. "OPEN ALPHA", "LIVE" (optional)
+#   featured    - true on the hero project (optional; first one wins)
+#   tech        - stack chips, e.g. ["Rust", "S3 API"] (optional)
+#   [[project.links]]  - extra links: { label, href } (optional, repeatable)
+#   [[project.images]] - explicit carousel slides: { src, alt } (optional, repeatable)
+#   image_dir          - a folder whose images become slides AUTOMATICALLY, sorted
+#                        by filename, after any explicit `images`. This is the easy
+#                        path: just drop a .png/.jpg in that folder and rebuild - no
+#                        edit here. Name files "01-…", "02-…" to order the slideshow.
+#                        Alt text is derived from the filename; use [[project.images]]
+#                        when you want to hand-write alt text for a slide.
+#
+# Carousel behaviour: 0 slides = no carousel, 1 = static, 2+ = auto-rotates.
+
+[[project]]
+name = "Storm Buckets"
+tagline = "Managed, S3-compatible object storage, hosted 100% in Canada."
+description = "Object storage built on the open-source Garage engine and run on Canadian hardware under Canadian law. Point any S3 tool - aws cli, rclone, Terraform - at the endpoint, or use the dashboard; the data never leaves the country and the whole stack is open and auditable."
+url = "https://stormdevelopments.ca/buckets/"
+status = "OPEN ALPHA"
+featured = true
+tech = ["S3 API", "Garage", "Storm Pulse", "Canadian-hosted"]
+# Drop screenshots in static/media/images/projects/buckets/ and they appear as
+# slides on the next build. Name them 01-…, 02-… to control the order.
+image_dir = "/media/images/projects/buckets"
+
+[[project.links]]
+label = "Getting started"
+href = "https://stormdevelopments.ca/guide/buckets/getting-started/"
+
+[[project.links]]
+label = "Founding Alpha"
+href = "https://stormdevelopments.ca/alpha/feedback-bounty/"
+
+# No slides yet - drop real Storm Buckets screenshots in
+# static/media/images/projects/buckets/ (named 01-…, 02-…) and they appear here
+# on the next build. Or add an explicit [[project.images]] with custom alt text.
+
+[[project]]
+name = "Storm Pulse"
+tagline = "Secure server-management agent with zero listening ports."
+description = "A Python agent that manages Storm's VPS servers with no inbound ports at all: it connects outbound to a Django dashboard over WebSocket with mTLS, pushes system metrics every 15s, and runs only HMAC-signed, whitelisted commands. Rootless by default, with five independent security layers from the network down to the OS."
+url = "https://git.stormdevelopments.ca/official-public/storm-pulse"
+status = "OPEN SOURCE"
+tech = ["Python", "mTLS", "WebSocket", "AGPL-3.0"]
+
+[[project.links]]
+label = "PyPI"
+href = "https://pypi.org/project/storm-pulse-agent/"
+
+[[project]]
+name = "Rust Spellbook Site Generator"
+tagline = "The Rust static-site generator that builds this site."
+description = "A from-scratch SSG in Rust: markdown to HTML, schema.org JSON-LD, Atom feeds, and a custom SpellBlock shortcode system. It compiles the whole site to static files - hosted, of course, on Storm Buckets."
+url = "/journey/building-a-static-site-generator-in-rust.html"
+status = "LIVE"
+tech = ["Rust", "askama", "pulldown-cmark"]
+
+[[project.links]]
+label = "How I built it"
+href = "/journey/building-a-static-site-generator-in-rust.html"
+
+[[project.links]]
+label = "Source"
+href = "https://gitforge.ca/Mathew/my-spellbook-site"

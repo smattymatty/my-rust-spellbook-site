@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>/* Philosophy is gated behind the footer switch; restore the unlocked state before paint so it never flashes in or out. */try{if(localStorage.getItem('philosophy-unlocked')==='1')document.documentElement.classList.add('philosophy-unlocked');}catch(e){}</script>
     <title>{% block title %}mathewstorm.ca{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="/media/images/favicon.svg">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -32,8 +33,9 @@
         </button>
         <nav class="site-nav" id="site-nav">
             <a href="/">Writing</a>
+            <a href="/projects/">Projects</a>
             <a href="/newsletter/">Newsletter</a>
-            <a href="/philosophy/">Philosophy</a>
+            <a class="philosophy-gated" href="/philosophy/">Philosophy</a>
         </nav>
     </header>
     <main class="site-main">
@@ -45,6 +47,14 @@
             <span class="footer-status"><span class="status-dot"></span>ONLINE &middot; ONTARIO &middot; 2026</span>
         </div>
         <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="https://stormdevelopments.ca/sites">Storm Buckets</a> &middot; <a href="#top">&uarr; back to top</a></p>
+        <div class="footer-unlock">
+            <label class="unlock-switch">
+                <input type="checkbox" class="unlock-input" id="philosophy-unlock" aria-describedby="unlock-note">
+                <span class="unlock-track" aria-hidden="true"><span class="unlock-knob"></span></span>
+                <span class="unlock-text">Show philosophy writing</span>
+            </label>
+            <span class="unlock-note" id="unlock-note">Personal essays, off by default. Your choice is remembered on this device.</span>
+        </div>
     </footer>
     <script src="/assets/js/nav-toggle.js" defer></script>
     <script src="/assets/js/heading-anchor.js" defer></script>
@@ -52,6 +62,8 @@
     <script src="/assets/js/quotes.js" defer></script>
     <script src="/assets/js/copy-button.js" defer></script>
     <script src="/assets/js/tag-collapse.js" defer></script>
+    <script src="/assets/js/philosophy-unlock.js" defer></script>
+    <script src="/assets/js/projects-carousel.js" defer></script>
 </body>
 </html>
 

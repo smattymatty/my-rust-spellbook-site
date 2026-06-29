@@ -65,7 +65,7 @@ The most public response has come from Mitchell Hashimoto - GitHub user 1299, jo
 
 > I want to ship software, and it doesn't want me to ship software.
 >
-> — "Ghostty Is Leaving GitHub" by Mitchell Hashimoto
+> - "Ghostty Is Leaving GitHub" by Mitchell Hashimoto
 
 When the engineer who built Terraform announces he can't use GitHub for serious work, it's a data point about where the platform's priorities have moved.
 

@@ -126,7 +126,7 @@ async fn main() -> Result<()> {
         .collect();
     stale.sort();
 
-    // Nothing to do — the common case after a no-op rebuild.
+    // Nothing to do - the common case after a no-op rebuild.
     if to_upload.is_empty() && stale.is_empty() {
         println!(
             "no changes - bucket is up to date ({} file(s), {unchanged} unchanged)",

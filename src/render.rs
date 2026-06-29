@@ -1,6 +1,6 @@
 use askama::Template;
 use serde::Serialize;
-use crate::data::{Now, ConnectLink, ForgeEntry};
+use crate::data::{Now, ConnectLink, ForgeEntry, Project};
 
 /// Forge entries grouped by category label, in first-seen order. The category
 /// string IS the section heading, so any label renders and nothing is silently
@@ -128,6 +128,17 @@ pub struct NewsletterIndex {
 pub struct PhilosophyIndex {
     pub meta: PageMeta,
     pub essays: Vec<Post>,       // philosophy-kind posts, newest first
+}
+
+/// The /projects/ landing page: a hero project with a rotating image carousel,
+/// then a grid of the rest. Built from data/projects.toml, so it carries no copy
+/// of its own - the template renders whatever the data file lists.
+#[derive(Template)]
+#[template(path = "projects.html")]
+pub struct ProjectsIndex {
+    pub meta: PageMeta,
+    pub featured: Option<Project>,  // the hero project (first marked featured), if any
+    pub others: Vec<Project>,       // remaining projects, in file order
 }
 
 #[derive(Template)]

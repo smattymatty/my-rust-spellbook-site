@@ -1,5 +1,5 @@
 // Mobile nav: the terminal [ ≡ MENU ] button toggles the collapsed nav panel.
-// Desktop never reaches this state — the button is display:none above 820px, so
+// Desktop never reaches this state - the button is display:none above 820px, so
 // the listeners are harmless no-ops there. State lives in aria-expanded; CSS
 // reads it to swap the glyph/label and the .nav-open class drives the panel.
 

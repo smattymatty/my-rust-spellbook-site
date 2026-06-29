@@ -45,6 +45,26 @@ fn main() -> Result<()> {
     let newsletter = data::load_newsletter(&data_root.join("newsletter.toml"))
         .context("loading data/newsletter.toml")?;
 
+    // Portfolio entries for /projects/ - the public-facing showcase, with Storm
+    // Buckets as the hero. Structured data, not markdown, so it lives in data/.
+    let mut projects = data::load_projects(&data_root.join("projects.toml"))
+        .context("loading data/projects.toml")?;
+
+    // Fold each project's `image_dir` (when set) into its carousel slides: every
+    // image file in that folder becomes a slide, sorted by filename, appended
+    // after the explicitly-listed `images`. This is the "drop a screenshot in the
+    // folder and rebuild" path - no toml edit per picture.
+    for project in &mut projects {
+        if let Some(dir) = project.image_dir.clone() {
+            let discovered = discover_project_images(static_root, &dir)
+                .with_context(|| format!("scanning image_dir {dir} for {}", project.name))?;
+            if !discovered.is_empty() {
+                println!("project {}: +{} image(s) from {}", project.name, discovered.len(), dir);
+            }
+            project.images.extend(discovered);
+        }
+    }
+
     let md_files = content::discover(content_root)
         .context("discovering content")?;
 
@@ -148,6 +168,7 @@ fn main() -> Result<()> {
         render::SitemapUrl { loc: format!("{}/", site.base_url), lastmod: newest_post_date },
         render::SitemapUrl { loc: format!("{}/newsletter/", site.base_url), lastmod: newest_issue_date },
         render::SitemapUrl { loc: format!("{}/philosophy/", site.base_url), lastmod: newest_philosophy_date },
+        render::SitemapUrl { loc: format!("{}/projects/", site.base_url), lastmod: None },
     ];
     for p in &posts {
         sitemap_urls.push(render::SitemapUrl {
@@ -246,6 +267,38 @@ fn main() -> Result<()> {
     let philosophy_html = philosophy_page.render().context("rendering philosophy index")?;
     let written = output::write_at(output_root, "philosophy/index.html", &philosophy_html)?;
     println!("wrote {} ({} essay(s))", written.display(), philosophy_page.essays.len());
+
+    // The /projects/ landing page - the public showcase. The first project flagged
+    // `featured` becomes the hero (with its image carousel); the rest fall into the
+    // grid below, in file order.
+    let mut featured_project = None;
+    let mut other_projects = Vec::new();
+    for project in projects {
+        if project.featured && featured_project.is_none() {
+            featured_project = Some(project);
+        } else {
+            other_projects.push(project);
+        }
+    }
+    let projects_page = render::ProjectsIndex {
+        meta: render::PageMeta {
+            canonical_url: format!("{}/projects/", site.base_url),
+            body_class: "projects".to_string(),
+            og_title: "Projects - Mathew Storm".to_string(),
+            og_description: "What I build - led by Storm Buckets, Canadian S3-compatible object storage on open-source Garage.".to_string(),
+            og_type: "website".to_string(),
+            og_image: og_image_url(&site),
+            og_image_alt: if site.og_image.is_empty() { String::new() } else { "Mathew Storm".to_string() },
+            published_time: String::new(),
+            json_ld: site_json_ld(&site),
+        },
+        featured: featured_project,
+        others: other_projects,
+    };
+    let projects_html = projects_page.render().context("rendering projects index")?;
+    let written = output::write_at(output_root, "projects/index.html", &projects_html)?;
+    let project_count = projects_page.others.len() + projects_page.featured.iter().count();
+    println!("wrote {} ({} project(s))", written.display(), project_count);
 
     // The Atom feed - newsletter issues only. Absolute URLs and RFC3339
     // timestamps; published_at is YYYY-MM-DD, so midnight UTC is appended.
@@ -664,6 +717,57 @@ fn article_json_ld(
         "@graph": [ posting, person_node(site, &person_id), breadcrumb ],
     });
     to_script_json(&graph)
+}
+
+/// Every image file in `dir` (a site-root path like "/media/images/projects/buckets")
+/// as a carousel slide, sorted by filename. The folder lives under `static_root`, so
+/// "/media/..." maps to "static/media/...". A missing folder yields no slides - it's
+/// fine to set `image_dir` before the folder exists. Alt text is derived from the
+/// filename so dropped-in pictures are still labelled; use explicit `[[images]]`
+/// when a slide needs hand-written alt text.
+fn discover_project_images(static_root: &Path, dir: &str) -> Result<Vec<data::ProjectImage>> {
+    let rel = dir.trim_start_matches('/').trim_end_matches('/');
+    let fs_dir = static_root.join(rel);
+    if !fs_dir.is_dir() {
+        return Ok(Vec::new());
+    }
+    let mut files: Vec<std::path::PathBuf> = std::fs::read_dir(&fs_dir)
+        .with_context(|| format!("reading {}", fs_dir.display()))?
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
+        .filter(|p| p.is_file() && is_image_file(p))
+        .collect();
+    files.sort();  // filename order, so "01-…", "02-…" set the slide sequence
+    Ok(files.iter().filter_map(|p| {
+        p.file_name().and_then(|s| s.to_str()).map(|name| data::ProjectImage {
+            src: format!("/{rel}/{name}"),
+            alt: alt_from_filename(name),
+        })
+    }).collect())
+}
+
+fn is_image_file(p: &Path) -> bool {
+    matches!(
+        p.extension().and_then(|s| s.to_str()).map(|s| s.to_ascii_lowercase()).as_deref(),
+        Some("png" | "jpg" | "jpeg" | "webp" | "gif" | "avif" | "svg")
+    )
+}
+
+/// "01-buckets-dashboard.png" -> "Buckets dashboard". Drops the extension and a
+/// leading numeric sort prefix ("01-", "2_"), then turns separators into spaces
+/// and capitalizes. Good enough alt text for a screenshot dropped in a folder.
+fn alt_from_filename(name: &str) -> String {
+    let stem = name.rsplit_once('.').map(|(s, _)| s).unwrap_or(name);
+    let stem = match stem.find(['-', '_']) {
+        Some(i) if !stem[..i].is_empty() && stem[..i].chars().all(|c| c.is_ascii_digit()) => &stem[i + 1..],
+        _ => stem,
+    };
+    let words = stem.replace(['-', '_'], " ");
+    let words = words.trim();
+    let mut chars = words.chars();
+    match chars.next() {
+        Some(first) => first.to_uppercase().chain(chars).collect(),
+        None => String::new(),
+    }
 }
 
 fn format_date(yyyy_mm_dd: &str) -> String {
