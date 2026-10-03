@@ -11,7 +11,7 @@ tags:
 
 I spend a lot of time SSHed into VPSes. Editing Docker Compose files, tweaking Caddyfiles, adjusting config files, reading logs. The terminal is where I live when I'm deploying things.
 
-For a while, I thought the only choice was Nano and Vim. Nano is fine - it opens, you type, you save. But it feels like Notepad in 1995. No syntax highlighting worth mentioning, no multi-cursor, no real editing power. You outgrow it fast.
+I used Nano and Vim for years before I switched. Nano is fine - it opens, you type, you save. But it feels like Notepad in 1995. No syntax highlighting worth mentioning, no multi-cursor, no real editing power. You outgrow it fast.
 
 And the keybindings are unhinged. `^` means Ctrl. `M-` means Alt - not "Meta", not some special key, just Alt, but they call it Meta because apparently clarity is optional. Ctrl+X to quit - not Ctrl+Q like every other program on earth. Ctrl+O to save - not Ctrl+S. Ctrl+K to cut a line, Ctrl+U to paste it - because Ctrl+C and Ctrl+V were too intuitive? Ctrl+W to search - which in every browser and most editors closes the tab. The keybindings feel like they were designed by someone who had never used another program before and never planned to.
 

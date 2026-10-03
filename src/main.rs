@@ -268,6 +268,25 @@ fn main() -> Result<()> {
     let written = output::write_at(output_root, "philosophy/index.html", &philosophy_html)?;
     println!("wrote {} ({} essay(s))", written.display(), philosophy_page.essays.len());
 
+    // The /boulder/ page - the One Must Imagine idle game (client-side WASM,
+    // assets live under static/boulder/).
+    let game_page = render::GamePage {
+        meta: render::PageMeta {
+            canonical_url: format!("{}/boulder/", site.base_url),
+            body_class: "boulder".to_string(),
+            og_title: "One Must Imagine".to_string(),
+            og_description: "An idle game about pushing a boulder up a hill, forever. Built in Rust, compiled to WebAssembly.".to_string(),
+            og_type: "website".to_string(),
+            og_image: og_image_url(&site),
+            og_image_alt: if site.og_image.is_empty() { String::new() } else { "Mathew Storm".to_string() },
+            published_time: String::new(),
+            json_ld: String::new(),
+        },
+    };
+    let game_html = game_page.render().context("rendering game page")?;
+    let written = output::write_at(output_root, "boulder/index.html", &game_html)?;
+    println!("wrote {}", written.display());
+
     // The /projects/ landing page - the public showcase. The first project flagged
     // `featured` becomes the hero (with its image carousel); the rest fall into the
     // grid below, in file order.

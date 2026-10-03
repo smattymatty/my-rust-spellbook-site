@@ -1,6 +1,9 @@
 [workspace]
 resolver = "3"
 members = ["deploy"]
+# The idle game is its own standalone crate (wasm target, own deps); keep it out
+# of the site's workspace.
+exclude = ["game"]
 
 [package]
 name = "rust-spellbook-static"

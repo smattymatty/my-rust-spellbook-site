@@ -3,7 +3,7 @@ title: What Your Pipeline Pulls
 published_at: 2026-06-26
 kind: newsletter
 issue: 3
-featured: true
+featured: false
 cover: /media/images/newsletter/what-your-pipeline-pulls-cover.png
 cover_alt: "Own Your Stack, Issue 3 - What Your Pipeline Pulls. Title over a circuit-board background."
 description: "Move your forge and the next question is where the pipelines run. CI executes your code on top of a stack of other people's, all of it holding the same keys - and a version tag promises far less than it looks like it does."

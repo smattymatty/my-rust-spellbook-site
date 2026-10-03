@@ -10,7 +10,7 @@
 use std::collections::HashMap;
 
 use anyhow::{anyhow, bail, Result};
-use pulldown_cmark::{html, CowStr, Event, HeadingLevel, Parser, Tag, TagEnd};
+use pulldown_cmark::{html, CowStr, Event, HeadingLevel, Options, Parser, Tag, TagEnd};
 
 /// One section heading surfaced for an on-this-page table of contents.
 pub struct TocHeading {
@@ -185,7 +185,7 @@ fn parse_tag(body: &str) -> Result<(String, HashMap<String, String>)> {
 
 fn markdown_to_html(md: &str) -> String {
     let mut out = String::new();
-    html::push_html(&mut out, Parser::new(md));
+    html::push_html(&mut out, Parser::new_ext(md, Options::ENABLE_TABLES));
     out
 }
 
@@ -197,7 +197,7 @@ fn markdown_to_html_anchored(
     seen: &mut HashMap<String, usize>,
     toc: &mut Vec<TocHeading>,
 ) -> String {
-    let mut events: Vec<Event> = Parser::new(md).collect();
+    let mut events: Vec<Event> = Parser::new_ext(md, Options::ENABLE_TABLES).collect();
 
     let mut i = 0;
     while i < events.len() {

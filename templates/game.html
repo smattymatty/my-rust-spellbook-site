@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}One Must Imagine - mathewstorm.ca{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/boulder/game.css">
+{% endblock %}
+
+{% block content %}
+<div class="boulder-wrap">
+    <div class="console" id="console" aria-live="polite">
+        <div class="console-bar">
+            <span class="console-dot" aria-hidden="true"></span>
+            <span class="console-name">one_must_imagine</span>
+            <span class="console-report" id="report"></span>
+        </div>
+
+        <div class="phase-bar" id="phase-bar" aria-hidden="true"><span></span></div>
+
+        <pre class="scene" id="scene" aria-hidden="true"></pre>
+
+        <div class="float-layer" id="float-layer" aria-hidden="true"></div>
+
+        <div class="autocard" id="autocard"></div>
+
+        <div class="mbar" id="mbar" hidden></div>
+
+        <div class="acts" id="acts"></div>
+
+        <div class="rollrow" id="rollrow"></div>
+
+        <div class="readout" id="readout"></div>
+
+        <nav class="tabs" id="tabs" aria-label="Game sections"></nav>
+
+        <div class="panel" id="panel"></div>
+
+        <div class="console-foot">
+            <button id="btn-save" class="ghost" title="Save your run to this browser.">save</button>
+            <button id="btn-export" class="ghost" title="Download your save as a file.">export</button>
+            <label class="ghost import-label" title="Load a save file. Your current run is left alone if it can't be read.">import<input type="file" id="file-import" accept=".json,application/json" hidden></label>
+            <button id="btn-new" class="ghost danger" title="Abandon this run and start over.">abandon</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="/boulder/main.js"></script>
+{% endblock %}

@@ -21,7 +21,7 @@ The more interesting story isn't who's leaving. It's what was never there in the
 
 If you run an organization that ships code, this is the year that decision becomes yours. The good news is that the answer already exists, in production, hosting roughly 320,000 projects. I started running it last year.
 
-The forge is called Forgejo - open source, self-hosted, AGPL-licensed, maintained by Codeberg e.V., a nonprofit in Berlin. Codeberg runs the flagship public instance. I run two of my own: a private one for my company's internal source, and gitforge.ca, a public generalist forge anyone can sign up for. Both on Canadian VPS hardware I operate.
+The forge is called Forgejo - open source, self-hosted, AGPL-licensed, maintained by Codeberg e.V., a nonprofit in Berlin. Codeberg runs the flagship public instance. I run my own for my company's internal source, on Canadian VPS hardware I operate.
 
 ![The Forgejo project website on codeberg.org, showing the open-source, self-hosted forge.](/media/images/newsletter/inline/codeberg-forgejo-website.png)
 

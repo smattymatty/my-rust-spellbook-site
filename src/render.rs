@@ -130,6 +130,14 @@ pub struct PhilosophyIndex {
     pub essays: Vec<Post>,       // philosophy-kind posts, newest first
 }
 
+/// The /boulder/ page - the One Must Imagine idle game. All gameplay is
+/// client-side WASM; this template only provides the site chrome and the mount.
+#[derive(Template)]
+#[template(path = "game.html")]
+pub struct GamePage {
+    pub meta: PageMeta,
+}
+
 /// The /projects/ landing page: a hero project with a rotating image carousel,
 /// then a grid of the rest. Built from data/projects.toml, so it carries no copy
 /// of its own - the template renders whatever the data file lists.

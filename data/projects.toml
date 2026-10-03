@@ -58,6 +58,30 @@ label = "PyPI"
 href = "https://pypi.org/project/storm-pulse-agent/"
 
 [[project]]
+name = "Garage"
+tagline = "Upstream contributor to the open-source S3 engine behind Storm Buckets."
+description = "Garage is the distributed, S3-compatible storage engine Storm Buckets runs on. I send fixes upstream - merged patches that sharpen S3 compatibility for everyone who runs Garage, not just Storm."
+url = "https://git.deuxfleurs.fr/Deuxfleurs/garage"
+status = "CONTRIBUTOR"
+tech = ["Rust", "S3 API", "Open Source"]
+
+[[project.links]]
+label = "CORS preflight fix (#1450)"
+href = "https://git.deuxfleurs.fr/Deuxfleurs/garage/pulls/1450"
+
+[[project.links]]
+label = "Bulk delete fix (#1469)"
+href = "https://git.deuxfleurs.fr/Deuxfleurs/garage/pulls/1469"
+
+[[project]]
+name = "NorthTube"
+tagline = "Canadian video hosting. No ads, no algorithm."
+description = "A Canadian home for video that isn't YouTube. NorthTube runs on PeerTube, the open-source video platform, so it sits on Canadian hardware, carries no ads, and runs no recommendation algorithm deciding what you watch next."
+url = "https://northtube.ca/"
+status = "LIVE"
+tech = ["PeerTube", "Self-hosted", "Open Source", "Canadian"]
+
+[[project]]
 name = "Rust Spellbook Site Generator"
 tagline = "The Rust static-site generator that builds this site."
 description = "A from-scratch SSG in Rust: markdown to HTML, schema.org JSON-LD, Atom feeds, and a custom SpellBlock shortcode system. It compiles the whole site to static files - hosted, of course, on Storm Buckets."
@@ -68,7 +92,3 @@ tech = ["Rust", "askama", "pulldown-cmark"]
 [[project.links]]
 label = "How I built it"
 href = "/journey/building-a-static-site-generator-in-rust.html"
-
-[[project.links]]
-label = "Source"
-href = "https://gitforge.ca/Mathew/my-spellbook-site"

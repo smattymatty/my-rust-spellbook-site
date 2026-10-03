@@ -13,9 +13,3 @@ category = "OPEN SOURCE"
 name = "GitHub"
 url = "https://github.com/smattymatty"
 display = "github.com/smattymatty"
-
-[[entry]]
-category = "SELF-HOSTED"
-name = "gitforge.ca"
-url = "https://gitforge.ca/Mathew"
-display = "gitforge.ca/Mathew"

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>/* Philosophy is gated behind the footer switch; restore the unlocked state before paint so it never flashes in or out. */try{if(localStorage.getItem('philosophy-unlocked')==='1')document.documentElement.classList.add('philosophy-unlocked');}catch(e){}</script>
+    <script>/* Philosophy is gated behind the footer easter egg. Before paint: restore a saved unlock (no flash), AND if the visitor reached a /philosophy/ page directly - a shared link, a search result, the sitemap - unlock it for good, since they've clearly already found it. */try{var k='philosophy-unlocked',p=location.pathname,here=p==='/philosophy'||p.indexOf('/philosophy/')===0;if(here){try{localStorage.setItem(k,'1');}catch(e){}}var on=here;if(!on){try{on=localStorage.getItem(k)==='1';}catch(e){}}if(on)document.documentElement.classList.add('philosophy-unlocked');}catch(e){}</script>
     <title>{% block title %}mathewstorm.ca{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="/media/images/favicon.svg">
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -47,14 +47,7 @@
             <span class="footer-status"><span class="status-dot"></span>ONLINE &middot; ONTARIO &middot; 2026</span>
         </div>
         <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="https://stormdevelopments.ca/sites">Storm Buckets</a> &middot; <a href="#top">&uarr; back to top</a></p>
-        <div class="footer-unlock">
-            <label class="unlock-switch">
-                <input type="checkbox" class="unlock-input" id="philosophy-unlock" aria-describedby="unlock-note">
-                <span class="unlock-track" aria-hidden="true"><span class="unlock-knob"></span></span>
-                <span class="unlock-text">Show philosophy writing</span>
-            </label>
-            <span class="unlock-note" id="unlock-note">Personal essays, off by default. Your choice is remembered on this device.</span>
-        </div>
+        <a class="game-egg" href="/boulder/" aria-label="One Must Imagine - an idle game" title="One Must Imagine">&#9679;</a>
     </footer>
     <script src="/assets/js/nav-toggle.js" defer></script>
     <script src="/assets/js/heading-anchor.js" defer></script>
@@ -62,9 +55,6 @@
     <script src="/assets/js/quotes.js" defer></script>
     <script src="/assets/js/copy-button.js" defer></script>
     <script src="/assets/js/tag-collapse.js" defer></script>
-    <script src="/assets/js/philosophy-unlock.js" defer></script>
     <script src="/assets/js/projects-carousel.js" defer></script>
 </body>
 </html>
-
-        <p class="footer-fine">&copy; 2026 Mathew Storm &middot; built with rust &middot; hosted on <a href="

@@ -1,7 +1,7 @@
 ---
-title: "Why I'm So Excited About Garage: Self-Hosted S3 Storage for My Obsidian Notes"
+title: "Why I Chose Garage for Canadian S3 Storage"
 published_at: 2026-04-07
-description: "I needed S3 storage I actually owned, on Canadian hardware. Garage is the answer. Here's how I set up my first node and synced my Obsidian notes to it."
+description: "Garage is the open-source S3 engine I picked for storage on Canadian hardware. Here's a single-node setup behind Caddy, with Obsidian sync as the test client."
 quote: I went looking for something I could actually run myself, on Canadian hardware. I found Garage.
 tags:
   - garage
@@ -47,7 +47,7 @@ cd /opt/garage
 
 Then I generated a config file. The key things to set are where Garage stores its metadata and data, and a random secret for internal RPC communication between nodes.
 
-From the official documentation:
+Adapted from the official documentation, with every port bound to localhost:
 
 ```bash
 cat > garage.toml <<EOF
@@ -57,31 +57,31 @@ db_engine = "sqlite"
 
 replication_factor = 1
 
-rpc_bind_addr = "[::]:3901"
+rpc_bind_addr = "127.0.0.1:3901"
 rpc_public_addr = "127.0.0.1:3901"
 rpc_secret = "$(openssl rand -hex 32)"
 
 [s3_api]
 s3_region = "garage"
-api_bind_addr = "[::]:3900"
+api_bind_addr = "127.0.0.1:3900"
 root_domain = ".s3.garage.localhost"
 
 [s3_web]
-bind_addr = "[::]:3902"
+bind_addr = "127.0.0.1:3902"
 root_domain = ".web.garage.localhost"
 index = "index.html"
 
 [k2v_api]
-api_bind_addr = "[::]:3904"
+api_bind_addr = "127.0.0.1:3904"
 
 [admin]
-api_bind_addr = "[::]:3903"
+api_bind_addr = "127.0.0.1:3903"
 admin_token = "$(openssl rand -base64 32)"
 metrics_token = "$(openssl rand -base64 32)"
 EOF
 ```
 
-A few things worth noting here. The `db_engine` is set to `sqlite` - recommended for single-node deployments. The `s3_region` is `garage`, not `us-east-1` - this trips people up when configuring S3 clients later. And the secrets are generated fresh with `openssl rand`, so every install is unique.
+A few things worth noting here. The `db_engine` is set to `sqlite` - recommended for single-node deployments. The `s3_region` is `garage`, not `us-east-1` - this trips people up when configuring S3 clients later. And the secrets are generated fresh with `openssl rand`, so every install is unique. The docs bind to `[::]`, every interface, and with `network_mode: host` that puts the admin API on the public internet over plain HTTP. Binding to `127.0.0.1` keeps Garage reachable only through the reverse proxy. A multi-node cluster needs the RPC port open to its peers, but a single node doesn't.
 
 Then a minimal `docker-compose.yml`:
 
@@ -153,7 +153,7 @@ garage key create obsidian-key
 This will output a Key ID and a Secret key.
 
 {~ alert type="warning" ~}
-Save both somewhere safe - you will need them in a moment and the secret key is only shown once.
+Save both somewhere safe - you will need them in a moment.
 {~~}
 
 Now, for the glue: give the key permission to read and write the bucket:
@@ -216,11 +216,11 @@ s3.garage-one.stormdevelopments.ca {
     }
     respond @anonymous 403
 
-    reverse_proxy localhost:3900
+    reverse_proxy 127.0.0.1:3900
 }
 ```
 
-The anonymous block silently drops unauthenticated requests before they reach Garage - no fingerprinting, no information leakage to bots and scanners.
+The anonymous block answers unauthenticated requests with a bare 403 before they reach Garage, so bots and scanners learn nothing about what's behind it. It also blocks presigned URLs, which carry their signature in the query string, so drop it if you need those.
 
 Then add a DNS A record pointing your chosen subdomain at your VPS IP. I used my existing domain:
 
@@ -255,7 +255,7 @@ Fill in the following:
 - **Access Key ID:** the Key ID from `garage key create`
 - **Secret Access Key:** the secret key from `garage key create`
 - **Bucket Name:** `obsidian-vault`
-- **S3 URL Style:** Path-Style - Garage does not support virtual hosted-style URLs
+- **S3 URL Style:** Path-Style - virtual-hosted style needs a wildcard DNS record and certificate this setup doesn't have
 
 Hit the check button. If everything is configured correctly you should see "great! this bucket can be accessed!"
 
