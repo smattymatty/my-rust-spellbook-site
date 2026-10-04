@@ -60,7 +60,7 @@ Mostly the order wins. Mostly men kill when they're told to, and every war ever 
 
 Both things are true at once. The face gets murdered and the hand sometimes stays. You don't get to keep only the bright one, and you don't have to give in to the dark one.
 
-The cynic mistook a violation for a refutation. He saw the obligation broken and decided it was never binding. Breaking it is what binding looks like when someone overrides it, and the rare man who holds his fire is what it looks like when someone doesn't. War is where you find out ethics was never optional.
+The cynic mistook a violation for a refutation. He saw the obligation broken and decided it was never binding. War is where you find out ethics was never optional.
 
 ## Camus
 
@@ -86,9 +86,9 @@ That's why Levinas leaps, and it isn't a silly reason. He reaches for the infini
 
 I patch it with people. The duty to the one who can't kill back gets held by the people watching. It stops being a deal between two people and becomes something a crowd keeps.
 
-I've seen how that goes both ways. There's a clip of a comedian doing a set in a deep red state, the room cheering about getting the immigrants out, and then someone in the audience says they're an immigrant who just got their papers. The room claps before it can stop itself. That's the face landing faster than the room's politics could block it. What the clap turns into afterward is up to the room. It can spread, and the person changes the category. Or it can seal over into you're one of the good ones, and the category survives with one exception carved out. Same face, two outcomes. The face doesn't decide which one. What people have learned to do with it decides.
+I've seen how that goes both ways. There's a clip of a comedian doing a set in a deep red state, the room cheering about getting the immigrants out, and then someone in the audience says they're an immigrant who just got their papers. The room claps before it can stop itself. That's the face landing faster than the room's politics could block it. What the applause turns into afterward is up to the room. It can spread, and the person changes the category. Or it can seal over into you're one of the good ones, and the category survives with one exception carved out. Same face, two outcomes. The face doesn't decide which one. What people have learned to do with it decides.
 
-So the infinite was Levinas's way of protecting the powerless when the contract fails, and the crowd is mine. His is sturdier. Mine is the only one I can stand behind.
+So the infinite was Levinas's way of protecting the powerless when the contract fails, and I wanted the crowd to be mine. It can't be. A crowd doesn't pick a hand. It multiplies whichever one it's dealt, the applause or the mob, with no more malice than gravity. To hold a duty past the moment the applause fades, a crowd has to become an institution, and an institution holds people by filing them. The only thing that can carry the duty is the thing that can demolish the soul.
 
 ## Where he troubles me
 
@@ -98,7 +98,7 @@ In September 1982, less than two weeks after the massacre of Palestinian refugee
 
 Levinas said his definition of the other was completely different. The other is the neighbour. But if your neighbour attacks another neighbour, he said, then "in alterity we can find an enemy." And then, "There are people who are wrong."
 
-Some critics read that as Levinas saying Palestinians have no face. I don't think he said that, and the scholars who've gone through the interview line by line make a good case that he didn't. He was holding his own line between the person in front of me and the politics of judging between neighbours. In the same interview he said Israel was bound by responsibility for what happened whether or not it was guilty. That's to his credit.
+Some critics read that as Levinas saying Palestinians have no face. The scholars who've gone through the interview line by line make a good case that he didn't, and that he was holding his own line between the person in front of you and the politics of judging between neighbours. In the same interview he said Israel was bound by responsibility for what happened whether or not it was guilty. That's to his credit.
 
 It still troubles me. Asked about a specific people, two weeks after a massacre of them, the philosopher of the face reached for a category. The first concrete thing he offered was that the other can be an enemy. That's the third, the weighing between neighbours, and it's the exact spot where his own work says totality gets back in. The man who wrote the best account I know of people being filed under a role answered a question about real people from inside the file.
 
@@ -110,13 +110,15 @@ I read him anyway, as a reader and not a believer.
 
 I keep Levinas the way I kept Weil. The diagnosis stays. Totality, the face, and ethics coming before everything else. The infinity he stood it on goes.
 
-What's left has to come from people. Biology deals both hands. The same social brain that makes a saint makes a monster, love for your own and erasure for everyone else, out of the same machinery. Nothing in the brain picks between them. What the crowd teaches picks. That means it can be taught and it can be unlearned, which makes teaching it the work.
+What's left has to come from people. Biology deals both hands. The same social brain that makes a saint makes a monster, love for your own and erasure for everyone else, out of the same machinery. Nothing in the brain picks between them, and the crowd doesn't either. It multiplies what it's been taught. That means it can be taught and it can be unlearned, which makes teaching it the work.
 
-From my mom, I learned kindness with no heaven or hell attached. You're kind in front of cruelty, and usually not to change the cruel person, who isn't worth the chisel. You do it because other people are watching. Some of them carry it somewhere else, and there's a little less cruelty in the world than there was. She taught me that standing in a methadone line. It's Weil's grace with God taken out, something people hand to each other. It's also the crowd holding the duty to the one who can't kill back. The system was the gravity in my childhood. She was the grace, and she's part of why I'm still here.
+From my mom, I learned kindness with no heaven or hell attached. You're kind in front of cruelty, and usually not to change the cruel person, who isn't worth the chisel. You do it because other people are watching. Some of them carry it somewhere else, and there's a little less cruelty in the world than there was. She taught me that standing in a methadone line. It's Weil's grace with God taken out, something people hand to each other. It's also how a crowd learns which hand to multiply. The system was the gravity in my childhood. She was the grace, and she's part of why I'm still here.
 
 I don't know if I'd hold to the face when it's dangerous. I'd like to think so. I won't know until I'm there, and I've stopped treating that as a weakness. The decent people who went along with the worst things in the last century were sure of their own goodness. The doubt keeps me checking. The practice is small, and it doesn't show up anywhere, but it counts.
 
 Levinas would tell me I stopped one step short, the same thing Weil would say. I'd tell him the step up is the one that lets the world off the hook. It hands the weight people put on each other to heaven to sort out, and I'd rather keep it down here, where we can carry it.
+
+I can't trust the crowd or the institution, and I can't do without either, the same way I can't quit the job that pays the rent. So you work the system and spend your life tearing out the parts that erase people. Every fix turns into another form. The appeal becomes a process, the exit becomes a checkbox, and you push the rock back up the hill like Camus's Sisyphus.
 
 Which still leaves me with the question I can't put down. Where do morals come from when the brain gives you both the saint and the monster, and there's no God to break the tie?
 
