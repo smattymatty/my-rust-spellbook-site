@@ -3,7 +3,7 @@ title: "I Don't Let My Agents Commit"
 published_at: 2026-10-03
 carved: true
 kind: post
-description: "I have to understand my codebase, own it, and keep a hand on its design without drowning in what agents produce. So nothing lands until I've read it and run the commit myself. Here's how that works."
+description: "I have to understand my codebase, own it, and keep a hand on its design without drowning in what agents produce. So nothing lands until I've read it and run the commit myself."
 quote: The human is the loop.
 tags:
   - ai-assisted-engineering
@@ -61,11 +61,11 @@ It pairs with my other rule, which is no more than two sub-agents alongside the 
 
 One thing at a time per repo doesn't mean one thing at a time. I have four repos that feed each other, all one system, and work can be moving in each of them while every checkout still has a single owner of its git state. That's where the interesting engineering problem moved. It's the architecture of the whole fleet now, which pieces can run in tandem, and which ones I need to be able to come back to and understand.
 
-The one thing that bends these rules is my Storm Workflow. It runs writers one at a time in one checkout and reviewers in parallel, and it ends in the same handover block as everything else, so I count the whole run as one agent. That has changed how many I'm willing to have alive at once. It's the next post.
+The one thing I've been experimenting with and have been willing to bend these rules on is dynamic workflows. What I'm trying right now runs writers one at a time in one checkout and reviewers in parallel, and it ends in the same handover block as everything else, so I count the whole run as one agent. That has changed how many I'm willing to have alive at once. It's the next post.
 
 ## Skills are the other half
 
-[I've written before](/journey/grill-and-drill-skill.html) about not installing a skill you haven't read, because a skill is somebody else's judgment running in your assistant. The handover is the same idea at the other end of the work. Skills shape how the agent thinks on the way in. The handover decides what gets to become permanent on the way out, and nothing does that I haven't looked at. The block template lives in my CLAUDE.md, which every agent reads before it starts, so by the time one hands me a block I already know its shape and I'm only checking the parts that changed.
+[I've written before](/journey/grill-and-drill-skill.html) about the importance of editing installed skills to fit your workflow, because a skill is somebody else's judgment running in your assistant. The handover is the same idea at the other end of the work. Skills shape how the agent thinks on the way in. The handover decides what gets to become permanent on the way out, and nothing does that I haven't looked at. The block template lives in my CLAUDE.md, which every agent reads before it starts, so by the time one hands me a block I already know its shape and I'm only checking the parts that changed.
 
 ## The human is the loop
 
