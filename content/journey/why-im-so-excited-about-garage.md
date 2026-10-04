@@ -1,6 +1,7 @@
 ---
 title: "Why I Chose Garage for Canadian S3 Storage"
 published_at: 2026-04-07
+carved: false
 description: "Garage is the open-source S3 engine I picked for storage on Canadian hardware. Here's a single-node setup behind Caddy, with Obsidian sync as the test client."
 quote: I went looking for something I could actually run myself, on Canadian hardware. I found Garage.
 tags:

@@ -1,6 +1,7 @@
 ---
 title: "Storm Pulse: Integrations"
 published_at: 2026-07-03
+carved: false
 kind: post
 featured: false
 description: "Storm Pulse manages my S3 nodes and its kernel contains zero S3 knowledge. How a one-person infrastructure company keeps its most privileged code small enough to actually audit."

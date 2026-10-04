@@ -1,6 +1,7 @@
 ---
 title: A Forge of Your Own
 published_at: 2026-05-28
+carved: false
 kind: newsletter
 issue: 2
 featured: false

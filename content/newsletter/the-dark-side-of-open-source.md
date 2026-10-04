@@ -1,6 +1,7 @@
 ---
 title: The Dark Side of Open Source - Lessons Learned
 published_at: 2026-08-14
+carved: false
 kind: newsletter
 issue: 4
 featured: true

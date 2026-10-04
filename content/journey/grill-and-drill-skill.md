@@ -1,6 +1,7 @@
 ---
 title: "Grill and Drill with Skill"
 published_at: 2026-06-30
+carved: false
 kind: post
 description: "A skill you install without reading is shaping how you think, authored by someone else. I took Matt Pocock's grill-me, bent it to fit my head, and then built the inverse skill - drill - that the original never reached. The case against copy-paste, one layer up."
 quote: The drill came from refusing to stop at the grill.

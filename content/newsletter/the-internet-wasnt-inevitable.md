@@ -1,6 +1,7 @@
 ---
 title: The Internet Wasn't Inevitable
 published_at: 2026-05-14
+carved: false
 kind: newsletter
 issue: 1
 featured: false

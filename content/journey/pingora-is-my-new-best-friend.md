@@ -1,6 +1,7 @@
 ---
 title: "Pingora Is My New Best Friend"
 published_at: 2026-07-20
+carved: false
 kind: post
 featured: false
 description: "Pingora is Cloudflare's Rust framework for building proxies, and it's a framework, not a library: it runs the proxy and calls your code at fixed points. Here's how to build a pass-through proxy in about thirty lines, then teach it to hold and deny a request."

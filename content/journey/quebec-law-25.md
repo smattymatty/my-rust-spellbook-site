@@ -1,6 +1,7 @@
 ---
 title: Quebec Got Privacy Right - Why Law 25 Is My Gold Standard
 published_at: 2026-06-25
+carved: false
 kind: post
 featured: false
 description: "Quebec's Law 25 is the strictest privacy law in Canada, and the standard I hold Storm Buckets to even though PIPEDA is the one I'm held to. Confidentiality by default, readable consent, and the right to walk away with your data."

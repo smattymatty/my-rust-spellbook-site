@@ -1,6 +1,7 @@
 ---
 title: "Contributing to Garage: Two Pull Requests, Two Ways In"
 published_at: 2026-06-29
+carved: false
 kind: post
 description: "I bet my platform on Garage, the open-source S3 engine. So I started fixing it. Two merged pull requests - a one-line CORS fix I needed, and a bulk-delete compatibility fix I went looking for - and what they taught me about owning your tools."
 quote: Sovereignty includes being able to fix the stack you depend on.

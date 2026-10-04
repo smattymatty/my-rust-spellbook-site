@@ -1,6 +1,7 @@
 ---
 title: What Your Pipeline Pulls
 published_at: 2026-06-26
+carved: false
 kind: newsletter
 issue: 3
 featured: false

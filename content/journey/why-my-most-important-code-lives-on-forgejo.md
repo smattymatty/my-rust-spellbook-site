@@ -1,6 +1,7 @@
 ---
 title: Why My Most Important Code Lives on Forgejo
 published_at: 2026-02-17
+carved: true
 description: "My company's code lives on a Forgejo forge I run on Canadian hardware, not on GitHub. Here's the setup and the branding behind Storm Forge."
 quote: "That's not a service I'm borrowing from a trillion-dollar American corporation. That's mine."
 tags:

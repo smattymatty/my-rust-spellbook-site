@@ -1,6 +1,7 @@
 ---
 title: Why I'm building a Canadian S3 alternative (The 85% problem)
 published_at: 2026-06-21 
+carved: false
 description: Three American firms hold 85% of Canada's public cloud. Storm Buckets is my open, Canadian-hosted, S3-compatible alternative for object storage.
 quote: A Canadian flag on the login page fixes nothing if you still can't leave
 kind: post

@@ -1,6 +1,7 @@
 ---
 title: Lessons from 15 Hours of Downtime
 published_at: 2026-05-19
+carved: false
 description: "Both my providers went down simultaneously because they shared a datacenter one layer below the surface. Layered coupling is the hardest kind to see."
 quote: I thought I had two providers. I actually had one datacenter, hidden one layer down the stack.
 tags:

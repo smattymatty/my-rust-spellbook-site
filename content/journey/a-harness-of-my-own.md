@@ -1,6 +1,7 @@
 ---
 title: "A Harness of My Own"
 published_at: 2026-07-14
+carved: false
 kind: post
 featured: false
 description: "Alberta published 21 white papers on turning an AI agent workforce loose on a 40-year, 466-million-line technical estate. Reading the first two, I found the architecture behind a framework I'd already built."

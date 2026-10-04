@@ -1,6 +1,7 @@
 ---
 title: "How Docker Got Me Off DigitalOcean's App Platform"
 published_at: 2026-04-21
+carved: false
 description: "I leaned hard on DigitalOcean's App Platform until the bill mattered. Learning Docker cut my costs and forced me to learn the rest of the stack. Six years later it runs everything I build."
 quote: Most of the tools worth learning feel that way at first.
 tags:

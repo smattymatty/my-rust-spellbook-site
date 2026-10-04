@@ -1,6 +1,7 @@
 ---
 title: "Micro: The Terminal Editor Between Nano and Vim"
 published_at: 2026-02-18
+carved: false
 description: "Why I switched from nano and vim to Micro for editing config files on VPSes. A terminal text editor with sane keybindings, syntax highlighting, and zero learning curve."
 quote: I respect vim users. I just don't want to be one.
 tags:

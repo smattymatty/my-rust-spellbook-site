@@ -1,6 +1,7 @@
 ---
 title: "My Take on Simone Weil"
 published_at: 2026-06-22
+carved: false
 kind: philosophy
 description: "Keeping the moral core of Simone Weil - attention, gravity, the face - and leaving the mysticism out of it."
 tags:
@@ -10,9 +11,7 @@ tags:
   - humanist-absurdism
 ---
 
-I'm a Christian who doesn't believe in God.
-
-I keep the morals I grew up with and I throw out the magic. I don't think God exists. I don't think Jesus was the son of anything - I think he was a man, probably one who came to believe what people kept telling him about himself, and a revolutionary whose teaching changed the moral shape of the world without a single miracle needing to be real. I read the Gospels for what's usable and I leave the supernatural on the page.
+I keep the morals I grew up with and I throw out the magic. I don't think God exists. I don't think Jesus was the son of anything. I read the Gospels for what's usable and I leave the supernatural on the page.
 
 I read Simone Weil the same way.
 

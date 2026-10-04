@@ -1,6 +1,7 @@
 ---
 title: "us-east-1: The Bane of Sovereignty"
 published_at: 2026-09-17
+carved: true
 kind: post
 featured: false
 description: "A backup client's hardcoded us-east-1 locked out our Canadian storage. S3-compatible tools should let users set the signing region."

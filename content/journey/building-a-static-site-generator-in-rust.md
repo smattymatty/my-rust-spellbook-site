@@ -1,6 +1,7 @@
 ---
 title: Building a Static Site Generator in Rust
 published_at: 2026-06-19
+carved: false
 kind: post
 featured: false
 description: "Why I rebuilt my personal site as a static site generator in Rust - the Spellbook lineage from Django, compile-time templates with Askama, and hosting the whole thing on my own Storm Buckets."

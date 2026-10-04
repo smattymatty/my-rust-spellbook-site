@@ -1,6 +1,7 @@
 ---
 title: "Building RAG Search for My Docs, Powered by Cohere"
 published_at: 2026-07-13
+carved: false
 kind: post
 featured: false
 description: "Semantic search for the Storm Developments guide: Cohere Embed and Rerank over pgvector, the bugs I hit building it, and the cost controls that came out of them."
