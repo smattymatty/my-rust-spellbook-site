@@ -1,7 +1,7 @@
 ---
 title: "My Take on Levinas"
 published_at: 2026-10-03
-carved: false
+carved: true
 kind: philosophy
 description: "Keeping Levinas's diagnosis of totality and the face, and grounding the obligation in people instead of in God."
 tags:
@@ -24,7 +24,7 @@ Levinas doesn't answer the cynic with kindness or any of the soft words the cyni
 
 War is a complete system with no outside. Every person in it gets reduced to a carrier of forces they didn't choose and can't see, handed a role and made to play it. He calls this totality, and what defines it is that there's nowhere to stand and decline it, because the map already has a slot marked for that too. The worst of it, he says, isn't the wound. You get broken off from your own life and made to play a part you don't recognize as yours while you're still standing in it.
 
-You don't need a war for that. Most of the totalities that process people run quietly during peacetime. The foster kid is a case number, the worker is a headcount, the patient is a bed and a billing code, the migrant is a figure in a politician's speech. Each one is a function the system tracks perfectly, and being tracked that perfectly is the quiet violence of it.
+You don't need a war for that. Most of the totalities that process people run quietly during peacetime. The foster kid is a case number, the worker is a headcount, the patient is a bed and a billing code, the migrant is a figure in a politician's speech. I was the case number. Each one is a function the system tracks perfectly, and being tracked that perfectly is the quiet violence of it.
 
 It even catches the people who think they run it. "We have to build it, because if we don't, they will." That one sentence holds the whole grammar of totality. Nobody can step out and refuse, and the builders are carried along too, most of them running a race they don't even want. The AI arms race is a war nobody declared and nobody can leave.
 
@@ -54,13 +54,13 @@ His claim is that the face obligates you, whether or not anyone obeys. A murder 
 
 A lot of people stop there. The obligation is real but it loses, the decent thing is real but the world grinds it under, so what. The record shows a second thing, and the cynic has a harder time with it. Sometimes the hand stays.
 
-Trench warfare is about the worst place people have ever built. The men in it were already killers, inside a machine that ordered the killing, facing enemies who had no power to stop them. And sometimes they didn't fire. Along the quiet stretches of the front, both sides worked out unspoken truces, live and let live. A man had someone in his sights and let him walk. Nothing with any force stopped his hand. A face did.
+Trench warfare is about the worst place people have ever built. The men in it were already killers, inside a machine that ordered the killing. And sometimes they didn't fire. Along the quiet stretches of the front, both sides worked out unspoken truces, live and let live. Most of that was a deal, restraint traded for restraint, and the cynic can have that part. A deal explains why a line went quiet. It doesn't explain the man who had someone in his sights, alone, and let him walk. Nothing with any force stopped his hand. A face did.
 
 Mostly the order wins. Mostly men kill when they're told to, and every war ever fought proves the face doesn't always stop the sword. But if the cynic's map were the whole territory, the number of men who held their fire would be zero, and it isn't. With every pressure to kill, no god promising a reward and nobody watching to applaud, some men still couldn't. That mercy paid for nothing and got chosen anyway.
 
 Both things are true at once. The face gets murdered and the hand sometimes stays. You don't get to keep only the bright one, and you don't have to give in to the dark one.
 
-The cynic mistook a violation for a refutation. He saw the obligation broken and decided it was never binding. War is where you find out ethics was never optional.
+The cynic mistook a violation for a refutation. He saw the obligation broken and decided it was never binding. The order had to override something to get the trigger pulled, and in the man who held his fire it couldn't. War is where you find out ethics was never optional.
 
 ## Camus
 
@@ -110,17 +110,17 @@ I read him anyway, as a reader and not a believer.
 
 I keep Levinas the way I kept Weil. The diagnosis stays. Totality, the face, and ethics coming before everything else. The infinity he stood it on goes.
 
-What's left has to come from people. Biology deals both hands. The same social brain that makes a saint makes a monster, love for your own and erasure for everyone else, out of the same machinery. Nothing in the brain picks between them, and the crowd doesn't either. It multiplies what it's been taught. That means it can be taught and it can be unlearned, which makes teaching it the work.
+What's left has to come from people. Biology deals both hands. The same social brain that makes a saint makes a monster, love for your own and erasure for everyone else, out of the same machinery. Nothing in the brain picks between them, and the crowd doesn't either. It multiplies what it's been taught, and what's taught can be unlearned.
 
-From my mom, I learned kindness with no heaven or hell attached. You're kind in front of cruelty, and usually not to change the cruel person, who isn't worth the chisel. You do it because other people are watching. Some of them carry it somewhere else, and there's a little less cruelty in the world than there was. She taught me that standing in a methadone line. It's Weil's grace with God taken out, something people hand to each other. It's also how a crowd learns which hand to multiply. The system was the gravity in my childhood. She was the grace, and she's part of why I'm still here.
+From my mom, I learned kindness with no heaven or hell attached. You're kind in front of cruelty, and usually not to change the cruel person, who isn't worth the chisel. You do it because other people are watching. Some of them carry it somewhere else, and there's a little less cruelty in the world than there was. I was in foster care for most of my childhood and saw her on visits. She was in a wheelchair by then and could barely move, and she was still kind to people who weren't kind to her, with me watching. Her kindness is Weil's grace with God taken out, something people hand to each other. It's also how a crowd learns which hand to multiply. The system was the gravity in my childhood. She was the grace, and she's part of why I'm still here.
 
 I don't know if I'd hold to the face when it's dangerous. I'd like to think so. I won't know until I'm there, and I've stopped treating that as a weakness. The decent people who went along with the worst things in the last century were sure of their own goodness. The doubt keeps me checking. The practice is small, and it doesn't show up anywhere, but it counts.
 
 Levinas would tell me I stopped one step short, the same thing Weil would say. I'd tell him the step up is the one that lets the world off the hook. It hands the weight people put on each other to heaven to sort out, and I'd rather keep it down here, where we can carry it.
 
-I can't trust the crowd or the institution, and I can't do without either, the same way I can't quit the job that pays the rent. So you work the system and spend your life tearing out the parts that erase people. Every fix turns into another form. The appeal becomes a process, the exit becomes a checkbox, and you push the rock back up the hill like Camus's Sisyphus.
+I can't trust the crowd or the institution, and I can't do without either, the same way I can't quit the job that pays the rent. So you work the system and spend your life tearing out the parts that erase people, the ones where saying that's not who I am changes nothing. Every fix turns into another form. The appeal becomes a process, the exit becomes a checkbox, and you push the rock back up the hill like Camus's Sisyphus.
 
-Which still leaves me with the question I can't put down. Where do morals come from when the brain gives you both the saint and the monster, and there's no God to break the tie?
+That's how to carry it. It still leaves me with the question I can't put down. Where do morals come from when the brain gives you both the saint and the monster, and there's no God to break the tie?
 
 ## Sources
 
